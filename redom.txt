@@ -1,2 +1,2 @@
-hellow word
-1234564
+print("hello word")
+
