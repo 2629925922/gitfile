@@ -1,2 +1,3 @@
 print("hello word")
-
+a = 123
+print(a)
