@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title>网站信息</title>  
+    <link rel="stylesheet" href="./static/css/pintuer.css">
+    <link rel="stylesheet" href="./static/css/admin.css">
+    <script src="./static/js/jquery.js"></script>
+    <script src="./static/js/pintuer.js"></script>
+</head>
+<body>
+<form method="POST" class="form-x" action="/info">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="panel admin-panel">
+  <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 个人网站信息</strong></div>
+  <div class="body-content">
+<!--    <form method="post" class="form-x" action="/info">-->
+      <div class="form-group">
+        <div class="label">
+          <label>年龄：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input" name="age" value="" />
+          <div class="tips"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>性别：</label>
+        </div>
+        <div class="field">
+          <input type="radio" name="genter" value="男" />男
+          <input type="radio" name="genter" value="女" />女
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>现住城市：</label>
+        </div>
+        <div class="field">
+          <select name="city">
+            <option>请选择你现居住的城市</option>
+            <option>太原</option>
+            <option>大同</option>
+            <option>忻州</option>
+            <option>五台山</option>
+            <option>原平</option>
+            <option>朔州</option>
+            <option>太原</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>民族：</label>
+        </div>
+        <div class="field">
+            <input type="text" class="input" name="national" value="" />
+<!--            <input type="button" class="button bg-blue margin-left" id="image1" value="+ 浏览上传" >-->
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>地址：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input" name="place" value="" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>手机号：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input" name="phone" value="" />
+          <div class="tips"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+        </div>
+      </div>
+<!--    </form>-->
+  </div>
+</div>
+  </form>
+</body></html>

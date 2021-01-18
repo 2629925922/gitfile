@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/html">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+    <link rel="stylesheet" href="./static/css/pintuer.css">
+    <link rel="stylesheet" href="./static/css/admin.css">
+    <script src="./static/js/jquery.js"></script>
+    <script src="./static/js/pintuer.js"></script>
+    <style>
+        .img1{
+            width: 300px;
+            height: 200px;
+            /*margin-left: 50px;*/
+        }
+        .demo{
+            margin-left: 80px;
+        }
+        .se2{
+            width:100px;
+            height:36px;
+            position:absolute;
+            /*top:338px;*/
+            /*left:942px;*/
+            margin-left: 130px;
+            z-index: 1;
+            opacity: 0;
+        }
+        .se1{
+            width:100px;
+            height:36px;
+            font-size:16px;
+            color:#fff;
+            background: #28abde;
+            border-radius:5px;
+            position:absolute;
+            margin-left: 130px;
+            /*top:338px;*/
+            /*left:942px;*/
+        }
+        .se1:hover{
+            cursor: pointer;
+        }
+        .button{
+            margin-top: 40px;
+            margin-left: 80px;
+            color: #00aaee;
+            width: 200px;
+        }
+        .fot{
+            margin-left: 270px;
+            color: #00FFFF;
+        }
+    </style>
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-head"><strong><span class="icon-key"></span>头像上传 </strong></div>
+  <div class="body-content">
+      <div class="form-group">
+        <div class="demo">
+            <img src="./static/img/{{file}}" class="img1" alt="图片找不到" />
+        </div>
+      </div>
+
+      <div class="form-group">
+
+        <form method='post' enctype="multipart/form-data" action="/file">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input class="se2" id="f_file" type="file" name="image"/>
+                <label for="f_file">
+                    <input class="se1" type="button" value="更换头像" ><span class="fot">支持上传jpg，png，gif，bmp，jpeg 格式</span>
+                </label>
+      </div>
+      <div>
+          <button class="button" type="submit"> 提交</button>
+      </div>
+  </div></form>
+</div>
+</body></html>
