@@ -24,6 +24,7 @@ class user(db.Model):
     message = db.Column(db.String(200))
     city = db.Column(db.String(30))
     genter = db.Column(db.String(10))
+    active = db.Column(db.String(50))
     # quote = db.Column(db.String(200))
 
 

@@ -4,11 +4,34 @@ from create_sql import db,user
 import os
 import random
 from flask_wtf import CSRFProtect
+# import email_active
+import uuid
+from flask_mail import Mail,Message
 # from flask_uploads import *
 
 app = Flask(__name__)
 app.secret_key='sf131sad31f'
 CSRFProtect(app)
+
+
+
+# MAIL_SERVER = "smtp.qq.com"
+# MAIL_PORT = 587
+# MAIL_USE_TLS = True
+# MAIL_USERNAME = "2629925922@qq.com"
+# MAIL_PASSWORD = "zqwaipprwasaeaae"
+# MAIL_DEFAULT_SENDER = "2629925922@qq.com"
+
+app.config['MAIL_SERVER'] = 'smtp.qq.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True   # 这里要使用ssl
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_DEBUG'] = True  # 开启debug 查看报错信息
+app.config['MAIL_USERNAME'] = '####@qq.com'       #这里填发送方的邮箱
+app.config['MAIL_PASSWORD'] = '邮箱开启imtp时的授权码'    # 授权码不能用空格
+app.config['MAIL_DEFAULT_SENDER'] ='####@qq.com'	# 默认的邮件发送者
+
+mail = Mail(app)
 # #文件上传设置
 # app.config['UPLOAD_PHOTOS_DEST'] = "./static/img"
 # app.config['UPLOAD_PHOTOS_URL'] = "/static/img"
@@ -76,25 +99,59 @@ def login():
                 #return "你的账户跟密码错误！！"
         return "<script>alert('账户或密码错误！！');location.href='http://127.0.0.1:5000'</script>"
 
-
-@app.route("/register",methods=['GET','POST'])
-def register():
+@app.route("/email",methods=['GET','POST'])
+def email_active_code():
     if request.method == 'GET':
         return render_template("from.html")
     else:
         name = request.form.get("username")
         email = request.form.get("email")
-        passwd = request.form.get("password")
-        if (name == "" or passwd == "" or email == ""):
-            return "<script>alert('账户或密码或邮箱为空！！');location.href='http://127.0.0.1:5000'</script>"
         user_data = user.query.all()
         for i in user_data:
-            if(i.name == name):
+            if (i.name == name):
                 return "<script>alert('用户名已存在！！');location.href='http://127.0.0.1:5000'</script>"
-        data = user(name=name,email=email,password=passwd)
-        db.session.add(data)
-        db.session.commit()
+        code = str(uuid.uuid1())[:6]
+        active_code = "flask active code is  " + code
+        # return "name: "+ name + ",email: " + email + ",code: " + active_code
+        message = Message(subject="hello flask email active code",recipients=[email],body=active_code)
+        # message = Message(subject='邮箱标题’, recipients=['接收方的邮箱'], body='发送的邮箱内容')
+        try:
+            mail.send(message)
+            data = user(name=name,email=email,active=code)
+            db.session.add(data)
+            db.session.commit()
+            # return "<script>alert('激活邮件已发送，请查收！');location.href='http://127.0.0.1:5000/register'</script>"
+
+        except:
+            return "<script>alert('邮件发送失败');window.history.go(-1)</script>"
+        return render_template("email1.html", name=name)
+@app.route("/register",methods=['GET','POST'])
+def register():
+    if request.method == 'GET':
+        return render_template("email1.html")
+    else:
+        name = request.form.get("username")
+        # email = request.form.get("email")
+        passwd = request.form.get("password")
+        active = request.form.get("active")
+        if (name == "" or passwd == "" or active == ''):
+            return "<script>alert('账户或密码或邮箱或激活码为空！！');location.href='http://127.0.0.1:5000'</script>"
+        # return "name: "+name+",password: "+passwd+",active: "+active
+        data_active = user.query.filter(user.name == name).all()
+        for i in data_active:
+            if(i.active != active):
+                return "<script>alert('邮箱验证码输入有误!!');window.history.go(-1)</script>"
+        data = user.query.filter(user.name == name).all()
+        for i in data:
+            i.password = passwd
+            i.active = active
+            db.session.add(i)
+            db.session.commit()
+        # data = user(name=name,email=email,password=passwd)
+        # db.session.add(data)
+        # db.session.commit()
         return "<script>alert('注册成功，请登录');location.href='http://127.0.0.1:5000'</script>"
+
 @app.route('/logout')
 def logout():
     #return render_template('from.html')
@@ -249,4 +306,5 @@ def error(e):
 #     print(e)
 #     return render_template("500.html")
 if __name__ == '__main__':
+    # send_mail()
     app.run(debug=True)

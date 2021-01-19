@@ -39,23 +39,21 @@
                 </div>
             </div>
             </form>
-            <form action="/register" method="post">
+            <form action="/email" method="post">
             <div class="form sign-up">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <h2>立即注册</h2>
-                <label>
-                    <span>用户名</span>
-                    <input type="text" name="username" />
+                <form method="post" action="/email">
+                    <label>
+                    <span>账户名</span>
+                    <input type="text" name="username"/>
                 </label>
                 <label>
                     <span>邮箱</span>
-                    <input type="email" name="email"/>
+                    <input type="email" name="email"/><input type="submit" class="submit" value="获取验证码"/>
                 </label>
-                <label>
-                    <span>密码</span>
-                    <input type="password" name="password"/>
+                    </form>
                 </label>
-                <button type="submit" class="submit">注 册</button>
             </div>
             </form>
         </div>

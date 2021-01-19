@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+<meta charset="utf-8">
+<title>制梦空间注册登录页面</title>
+<link rel="stylesheet" href="./static/css/style.css" type="text/css">
+</head>
+
+<body>
+    <div class="content">
+            <form action="/register" method="post">
+            <div class="form sign-up">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="username" value={{name}}/>
+                <label>
+                    <span>密码</span>
+                    <input type="text" name="password" />
+                </label>
+                <label>
+                    <span>邮箱激活码</span>
+                    <input type="text" name="active" />
+                </label>
+                <button type="submit" class="submit">登 录</button>
+            </div>
+            </form>
+        </div>
+    <script src="./static/js/script.js"></script>
+
+	<div style="text-align:center;">
+</div>
+</body>
+
+</html>
