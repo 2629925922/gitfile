@@ -36,6 +36,9 @@
           <span></span><span></span><span></span>
         </button>
 					<ul class="layui-nav" lay-filter="">
+												<li class="layui-nav-item">
+							<a href="/sy">官网</a>
+						</li>
 						<li class="layui-nav-item">
 							<a href="/">首页</a>
 						</li>
@@ -74,19 +77,6 @@
 
 			<button type="reset">重置</button>
 		<hr />
-		<p id="msg" class="p1">留言信息</p>
-
-			<div class="demo1">
-				<table>
-					{% for i in object %}
-					<tr>
-						<td>留言人: </td><td>{{i.name}}</td>
-					</tr>
-					<tr>
-						<td>留言内容：</td><td>{{i.message}}</td>
-					</tr>
-					{% endfor %}
-				</table>
 			</div>
 		<script type="text/javascript">
 			function saveStorage(id) {

@@ -1,4 +1,4 @@
-from flask import Flask,render_template,session,request,abort,make_response
+from flask import Flask,render_template,session,request,abort,make_response,redirect,url_for,flash
 # from werkzeug.routing import BaseConverter
 from create_sql import db,user
 import os
@@ -8,9 +8,19 @@ from flask_wtf import CSRFProtect
 import uuid
 from flask_mail import Mail,Message
 # from flask_uploads import *
+# import uuid
+from werkzeug.security import generate_password_hash,check_password_hash
+from flask_wtf import FlaskForm,CSRFProtect
+# ,CSRFProtect
+from wtforms import StringField,PasswordField,HiddenField
+from wtforms.validators import DataRequired,Length,EqualTo,Email,ValidationError
+import datetime
+import time
+# from modles import current_user
+
 
 app = Flask(__name__)
-app.secret_key='sf131sad31f'
+# app.secret_key='sf131sad31f'
 CSRFProtect(app)
 
 
@@ -21,17 +31,29 @@ CSRFProtect(app)
 # MAIL_USERNAME = "2629925922@qq.com"
 # MAIL_PASSWORD = "zqwaipprwasaeaae"
 # MAIL_DEFAULT_SENDER = "2629925922@qq.com"
-
+app.config["SECRET_KEY"] = "FJDOAJ548FADSF1A"
 app.config['MAIL_SERVER'] = 'smtp.qq.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_SSL'] = True   # 这里要使用ssl
+app.config['MAIL_USE_SSL'] = True  # 这里要使用ssl
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_DEBUG'] = True  # 开启debug 查看报错信息
-app.config['MAIL_USERNAME'] = '####@qq.com'       #这里填发送方的邮箱
-app.config['MAIL_PASSWORD'] = '邮箱开启imtp时的授权码'    # 授权码不能用空格
-app.config['MAIL_DEFAULT_SENDER'] ='####@qq.com'	# 默认的邮件发送者
+app.config['MAIL_USERNAME'] = "2629925922@qq.com"  # 这里填发送方的邮箱
+app.config['MAIL_PASSWORD'] = "zqwaipprwasaeaae"  # 授权码不能用空格
+app.config['MAIL_DEFAULT_SENDER'] = "2629925922@qq.com"
 
 mail = Mail(app)
+
+# def follow(username):
+#     User = user.query.filter_by(name=username).first()
+#     if not User:
+#         return "用户不存在"
+#     if current_user.is_following(user):
+#         return "取消关注"
+#     else:
+#         return "关注"
+    # current_user.follow(user)
+    # return "已关注"
+
 # #文件上传设置
 # app.config['UPLOAD_PHOTOS_DEST'] = "./static/img"
 # app.config['UPLOAD_PHOTOS_URL'] = "/static/img"
@@ -62,95 +84,247 @@ mail = Mail(app)
 # def errors(num):
 #     abort(404)
 #     return "小子想渗透"
+class regfrom(FlaskForm):
+    # render_kw = {'class': 'name', 'placeholder': '请输入用户名'}
+    # render_kw = {'class': 'password', 'placeholder': '请输入密码'}
+    # , render_kw = {'class': 'password', 'placeholder': '请输入邮箱'}              #添加cssgenjs样式
+    # , render_kw = {'class': 'active', 'placeholder': '请输入激活码'}
+    username = StringField('用户名',validators=[DataRequired('用户名必须输入')])
+    password = PasswordField('密码',validators=[DataRequired("密码必须输入")])
+    email = StringField('邮箱',validators=[DataRequired("邮箱必须输入")])
+    active = StringField('激活码',validators=[DataRequired("激活码必须输入")])
 
 
 
+
+
+
+
+
+
+#  在请求进入视图函数之前 做出响应，只执行一次
+# @app.before_first_request
+# def bfe():
+#     return flash("欢迎来到制梦空间")
+
+#  在请求进入视图函数之前 做出响应
+@app.before_request
+def be1():
+    if request.path == "/login" or "/register" or "/register1":
+        return None
+    if not session.get("username"):
+        return redirect("/login")
+    return None
+
+@app.route("/sy")
+def sy():
+    return render_template("sy.html")
+@app.route("/pl")
+def pl():
+    name = session['username']
+    object = user.query.all()
+    return render_template("pl.html",object=object,name=name)
+@app.route("/gr",methods=['GET','POST'])
+def gr():
+    if request.method == 'GET':
+        return redirect(url_for("pl"))
+    else:
+        name = request.form.get("name")
+        data = user.query.filter(user.name==name).all()
+        for i in data:
+            return render_template("gr.html",image=i.image,name=i.name)
+
+@app.route("/gz",methods=['GET','POST'])
+def gz():
+    name = request.form.get("name")
+    fun = request.form.get("follow")
+    User = user.query.filter_by(name=name).first()
+    if fun == "follow":
+        if not User:
+            flash("用户不存在")
+        if user.is_following(User):
+            flash("用户已关注")
+        user.follow(User)
+        flash("已关注")
+    elif fun == "unfollow":
+        if not User:
+            flash("用户不存在")
+        if not user.is_following(User):
+            flash("你未关注该用户")
+        user.unfollow(User)
+        flash("已取消关注")
 
 
 @app.route('/')
 def index():
     if 'username' in session:
         return render_template('index.html',name=session['username'])
-    return render_template('from.html')
-@app.route('/index',methods=["GET","POST"])
-def login():
-    if request.method == 'GET':
-        return render_template('from.html')
-    else:
-    #name = request.values.get("username")
-    #passwd = request.values.get("password")
-        name = request.form.get("username")
-        passwd = request.form.get("password")
-        #if name == "admin" and passwd == "123456":
-        if(name == "" or passwd == ""):
-            return "<script>alert('账户或密码为空！！');location.href='http://127.0.0.1:5000'</script>"
-        user_data = user.query.all()
-        for i in user_data:
-            if(i.name == name and i.password == passwd):
-                session['username'] = name
-                rep = make_response("success")
-                rep.set_cookie(name,max_age=60)
-                print(rep)
-                return render_template('index.html', name=name)
-        #if name == "admin" and passwd == "123456":
-            #else:
-                #error = "你的用户名跟密码错误"
-                #abort(404)
-                #return "你的账户跟密码错误！！"
-        return "<script>alert('账户或密码错误！！');location.href='http://127.0.0.1:5000'</script>"
+    return redirect(url_for("login"))
 
-@app.route("/email",methods=['GET','POST'])
-def email_active_code():
+# @app.route('/index',methods=["GET","POST"])
+# def login():
+#     form = regfrom()
+#     if request.method == 'GET':
+#         return render_template('from.html')
+#     else:
+#     #name = request.values.get("username")
+#     #passwd = request.values.get("password")
+#         # name = request.form.get("username")
+#         # passwd = request.form.get("password")
+#         name = form.username.data
+#         passwd = form.password.data
+#         #if name == "admin" and passwd == "123456":
+#         if(name == "" or passwd == ""):
+#             return "<script>alert('账户或密码为空！！');location.href='http://127.0.0.1:5000'</script>"
+#         user_data = user.query.all()
+#         for i in user_data:
+#             if(i.name == name and i.password == passwd):
+#                 session['username'] = name
+#                 rep = make_response("success")
+#                 rep.set_cookie(name,max_age=60)
+#                 print(rep)
+#                 return render_template('index.html', name=name)
+#         #if name == "admin" and passwd == "123456":
+#             #else:
+#                 #error = "你的用户名跟密码错误"
+#                 #abort(404)
+#                 #return "你的账户跟密码错误！！"
+#         return "<script>alert('账户或密码错误！！');location.href='http://127.0.0.1:5000'</script>"
+#
+#             return "<script>alert('用户名或密码为空，请返回!!');window.history.go(-1)</script>"
+@app.route('/login',methods=["GET","POST"])
+def login():
+    form = regfrom()
     if request.method == 'GET':
-        return render_template("from.html")
+        return render_template("login.html",form=form)
     else:
-        name = request.form.get("username")
-        email = request.form.get("email")
-        user_data = user.query.all()
-        for i in user_data:
-            if (i.name == name):
-                return "<script>alert('用户名已存在！！');location.href='http://127.0.0.1:5000'</script>"
-        code = str(uuid.uuid1())[:6]
-        active_code = "flask active code is  " + code
-        # return "name: "+ name + ",email: " + email + ",code: " + active_code
-        message = Message(subject="hello flask email active code",recipients=[email],body=active_code)
-        # message = Message(subject='邮箱标题’, recipients=['接收方的邮箱'], body='发送的邮箱内容')
-        try:
-            mail.send(message)
-            data = user(name=name,email=email,active=code)
+        username = form.username.data
+        passwd = form.password.data
+        # username = request.form.get('name')
+        # passwd = request.form.get('password')
+        if len(username)>1 and len(passwd)>1:
+            data = user.query.filter(user.name==username).all()
+            for i in data:
+                if check_password_hash(i.password,passwd) == True:
+                    return render_template("index.html",name=username)
+                # return render_template("login.html")
+                else:
+                    return "<script>alert('登录失败，请返回!!');window.history.go(-1)</script>"
+        else:
+            return "<script>alert('用户名或密码为空，请返回!!');window.history.go(-1)</script>"
+@app.route('/register',methods=['GET','POST'])
+def register():
+    form = regfrom()
+    # if form.validate_on_submit():                 #from.validate_on_submit()等价于   request.method==' post '  and  from.validate() ，validate是验证，验证表单信息
+    if request.method == 'GET':
+        return render_template("register.html", form=form)
+    else:
+        # # name = request.form.get("name")
+        # # email = request.form.get("email")
+        name = form.username.data
+        email = form.email.data
+        # return name + email
+        if user.query.filter(user.name == name).first():
+            # for i in users:
+            #     if(i.name == name):
+            return "<script>alert('用户名已存在');window.history.go(-1)</script>"
+        if len(name) > 1 and len(email) > 1:
+            code = str(uuid.uuid1())[:6]
+            codes = "欢迎注册制梦空间，你的激活码是:  " + code
+            message = Message(subject="制梦空间验证码", recipients=[email], body=codes)
+            try:
+                mail.send(message)
+            except:
+                return "<script>alert('发送失败!');window.history.go(-1)</script>"
+            session['username'] = name
+            data = user(name=name, email=email, active=code)
             db.session.add(data)
             db.session.commit()
-            # return "<script>alert('激活邮件已发送，请查收！');location.href='http://127.0.0.1:5000/register'</script>"
+            # return render_template("register1.html", name=name)
+            return redirect(url_for("register1"))
+        return "<script>alert('用户名或邮箱为空');window.history.go(-1)</script>"
 
-        except:
-            return "<script>alert('邮件发送失败');window.history.go(-1)</script>"
-        return render_template("email1.html", name=name)
-@app.route("/register",methods=['GET','POST'])
-def register():
+@app.route('/register1',methods=['GET','POST'])
+def register1():
+    form = regfrom()
+    # if form.validate_on_submit():
     if request.method == 'GET':
-        return render_template("email1.html")
+        return render_template('register1.html', form=form)
     else:
-        name = request.form.get("username")
-        # email = request.form.get("email")
-        passwd = request.form.get("password")
-        active = request.form.get("active")
-        if (name == "" or passwd == "" or active == ''):
-            return "<script>alert('账户或密码或邮箱或激活码为空！！');location.href='http://127.0.0.1:5000'</script>"
-        # return "name: "+name+",password: "+passwd+",active: "+active
-        data_active = user.query.filter(user.name == name).all()
-        for i in data_active:
-            if(i.active != active):
-                return "<script>alert('邮箱验证码输入有误!!');window.history.go(-1)</script>"
-        data = user.query.filter(user.name == name).all()
-        for i in data:
-            i.password = passwd
-            i.active = active
-            db.session.add(i)
-            db.session.commit()
-        # data = user(name=name,email=email,password=passwd)
-        # db.session.add(data)
-        # db.session.commit()
-        return "<script>alert('注册成功，请登录');location.href='http://127.0.0.1:5000'</script>"
+        name = session['username']
+        # name = request.form.get("name")
+        # passwd = request.form.get("password")
+        # active = request.form.get("active")
+        # name = form.username.data
+        passwd = form.password.data
+        active = form.active.data
+        if len(name) > 1 and len(passwd) > 1 and len(active) > 1:
+            passwd = generate_password_hash(passwd)
+            data = user.query.filter(user.name == name).all()
+            for i in data:
+                if (i.active == active):
+                    i.password = passwd
+                    db.session.add(i)
+                    db.session.commit()
+                    return redirect(url_for("login"))
+                else:
+                    return "<script>alert('激活码错误!!');window.history.go(-1)</script>"
+        return "<script>alert('密码或激活码为空');window.history.go(-1)</script>"
+
+
+
+# @app.route("/email",methods=['GET','POST'])
+# def email_active_code():
+#     if request.method == 'GET':
+#         return render_template("from.html")
+#     else:
+#         name = request.form.get("username")
+#         email = request.form.get("email")
+#         user_data = user.query.all()
+#         for i in user_data:
+#             if (i.name == name):
+#                 return "<script>alert('用户名已存在！！');location.href='http://127.0.0.1:5000'</script>"
+#         code = str(uuid.uuid1())[:6]
+#         active_code = "flask active code is  " + code
+#         # return "name: "+ name + ",email: " + email + ",code: " + active_code
+#         message = Message(subject="hello flask email active code",recipients=[email],body=active_code)
+#         # message = Message(subject='邮箱标题’, recipients=['接收方的邮箱'], body='发送的邮箱内容')
+#         try:
+#             mail.send(message)
+#             data = user(name=name,email=email,active=code)
+#             db.session.add(data)
+#             db.session.commit()
+#             # return "<script>alert('激活邮件已发送，请查收！');location.href='http://127.0.0.1:5000/register'</script>"
+#
+#         except:
+#             return "<script>alert('邮件发送失败');window.history.go(-1)</script>"
+#         return render_template("email1.html", name=name)
+# @app.route("/register",methods=['GET','POST'])
+# def register():
+#     if request.method == 'GET':
+#         return render_template("email1.html")
+#     else:
+#         name = request.form.get("username")
+#         # email = request.form.get("email")
+#         passwd = request.form.get("password")
+#         active = request.form.get("active")
+#         if (name == "" or passwd == "" or active == ''):
+#             return "<script>alert('账户或密码或邮箱或激活码为空！！');location.href='http://127.0.0.1:5000'</script>"
+#         # return "name: "+name+",password: "+passwd+",active: "+active
+#         data_active = user.query.filter(user.name == name).all()
+#         for i in data_active:
+#             if(i.active != active):
+#                 return "<script>alert('邮箱验证码输入有误!!');window.history.go(-1)</script>"
+#         data = user.query.filter(user.name == name).all()
+#         for i in data:
+#             i.password = passwd
+#             i.active = active
+#             db.session.add(i)
+#             db.session.commit()
+#         # data = user(name=name,email=email,password=passwd)
+#         # db.session.add(data)
+#         # db.session.commit()
+#         return "<script>alert('注册成功，请登录');location.href='http://127.0.0.1:5000'</script>"
 
 @app.route('/logout')
 def logout():
@@ -175,12 +349,34 @@ def xx():
 def zygh():
     name = session['username']
     return render_template('zygh.html',name=name)
+
+_now = time.time()
+@app.template_filter("time_filter")
+def time_filter(time):
+    # if not isinstance(time, datetime.datetime):
+    #     return time
+    # t1 = datetime.datetime.strptime(str(_now), "%Y-%m-%d %H:%M:%S.%f")
+    # t2 = datetime.datetime.strptime(time, "%Y-%m-%d %H:%M:%S.%f")
+    try :
+        _period = float(_now) - float(time)
+        _period = int(_period)
+        if _period < 60:
+            return "刚刚"
+        elif 60 <= _period < 3600:
+            return "%s分钟前" % int(_period / 60)
+        elif 3600 <= _period < 86400:
+            return "%s小时前" % int(_period / 3600)
+        elif 86400 <= _period < 2592000:
+            return "%s天前" % int(_period / 86400)
+        else:
+            return time.strftime('%Y-%m-%d %H:%M')
+    except:
+        return flash("请先登录")
 @app.route('/lyb',methods=['GET','POST'])
 def lyb():
     name = session['username']
     messageuser = []
     message = []
-    object = user.query.all()
     # for i in messaeuser:
     #     messageuser.append(i.name)
     #     message.append(i.message)
@@ -189,7 +385,9 @@ def lyb():
     message = request.form.get("message")
     data = user.query.filter(user.name==name).all()
     for i in data:
+        # now = datetime.strptime(str(now),"%Y-%m-%d %H:%M:%S.%f")
         i.message = message
+        i.message_time = _now
         db.session.add(i)
         db.session.commit()
         return "<script>alert('留言信息完成');window.history.go(-1)</script>"
@@ -237,10 +435,13 @@ def passd():
     #     return render_template("pass.html", name=name)
     # else:
     old_pass = request.form.get("oldpass")
+    # old_pass = generate_password_hash(old_pass)
     new_pass = request.form.get("newpass")
+    new_pass = generate_password_hash(new_pass)
     passwd_data = user.query.filter(user.name == name).all()
     for i in passwd_data:
-        if(old_pass == i.password):
+        # if(old_pass == i.password):
+        if check_password_hash(i.password, old_pass) == True:
             #new_passwd = user.query.filter(user.password == passwd_data).update({"password": new_pass})
             #print(new_passwd)
             i.password = new_pass
