@@ -65,8 +65,8 @@
 							<ul>
                                 <input type="hidden" name="name" value="{{i.name}}" />
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <li><input type="image" src="./static/img/{{i.image}}" class="img22" onclick="formSubmit()";></a><span>{{i.name}}</span></li>
-                                <li class="li1"><h2>{{i.message}}</h2></li>
+                                <li><input type="image" src="./static/img/{{i.image}}" class="img22" onclick="formSubmit()";><span>{{i.name}}</span></li>
+                                <li class="li1"><h2>{{i.message}}</h2></li><span style="margin-left: 10px">{{i.message_time|time_filter}}</span>
 							</ul>
 						</div>
                         </form>

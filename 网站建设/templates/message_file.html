@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+		<title>我的大学生活-学校</title>
+		<link rel="stylesheet" href="./static/css/layui.css">
+		<link rel="stylesheet" href="./static/css/index.css">
+		  <style>
+    .span1 {
+		color: brown;
+	}
+			  img{
+				  width: 680px;
+				  height: 350px;
+			  }
+              input::-webkit-input-placeholder{
+                  /*color: #3F3F3F;*/
+                  font-size: 2rem;
+              }
+			  /*input{*/
+				/*!*  margin-top: 30px;*!*/
+				/*!*  !*background-color: #00aaee;*!*!*/
+				/*!*  !*width:300px;*!*!*/
+				/*!*  !*height: 70px;*!*!*/
+			  /*!*}*!*/
+                      .img1{
+            width: 300px;
+            height: 200px;
+            /*margin-left: 50px;*/
+        }
+        .demo{
+            margin-left: 80px;
+        }
+        .se2{
+            width:100px;
+            height:36px;
+            position:absolute;
+            /*top:338px;*/
+            /*left:942px;*/
+            margin-left: 130px;
+            z-index: 1;
+            opacity: 0;
+        }
+        .se1{
+            width:100px;
+            height:36px;
+            font-size:16px;
+            color:#fff;
+            background: #28abde;
+            border-radius:5px;
+            position:absolute;
+            margin-left: 130px;
+            /*top:338px;*/
+            /*left:942px;*/
+        }
+        .se1:hover{
+            cursor: pointer;
+        }
+        .button{
+            margin-top: 40px;
+            margin-left: 80px;
+            color: #00aaee;
+            width: 200px;
+        }
+        .fot{
+            margin-left: 270px;
+            color: #00FFFF;
+        }
+  </style>
+	</head>
+    <body>
+		<!-- nav部分 -->
+		<div class="nav">
+			<div class="layui-container">
+				<!-- logo -->
+				<div class="nav-logo">
+					<h2>文章编写</h2>
+				</div>
+				<div class="nav-list">
+					<button>
+          <span></span><span></span><span></span>
+        </button>
+
+				</div>
+			</div>
+		</div>
+		<!-- banner部分 -->
+		<div class="banner xx">
+			<div class="title">
+				<p>编写图文</p>
+				<p class="en">My Message</p>
+			</div>
+		</div>
+		<div align="center" class="main-about">
+<!--			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">-->
+<!--            <input type="text" placeholder="请输入文章的标题" name="title" style="width: 80%;height: 70px;margin-top: 30px;border: none"/>-->
+<!--            <textarea type="text" placeholder="请输入文章的正文" name="message" style="width: 80%;height: 300px;margin-top: 30px;word-break:break-all;border: none"></textarea>-->
+            <form method='post' enctype="multipart/form-data" action="/mfile">
+            	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="title" value="{{title}}" />
+        		<input class="se2" id="f_file" type="file" name="image"/>
+                <label for="f_file">
+                    <input class="se1" type="button" value="上传图片" ><span class="fot">支持上传jpg，png，gif，bmp，jpeg 格式</span>
+                </label>
+
+		</div>
+        <hr>
+		<!-- main部分 -->
+		<div class="xxtp">
+            <div>
+                <input type="submit" align="center" value="发布" style="background-color: #00aaee;width: 30%;height: 80px;margin-top: 30px">
+            </div>
+		</div>
+		<div class="main-about">
+		</div>
+		<!-- footer部分 -->
+		<div class="footer">
+			<div class="layui-container">
+
+
+
+			</div>
+		</div>
+		<script src="./static/js/layui.js"></script>
+		<!--[if lt IE 9]>
+  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+		<script>
+			layui.config({
+				base: './static/js/'
+			}).use('firm');
+		</script>
+    </form>
+    </body>
+
+</html>

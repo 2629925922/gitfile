@@ -1,6 +1,6 @@
 from flask import Flask,render_template,session,request,abort,make_response,redirect,url_for,flash
 # from werkzeug.routing import BaseConverter
-from create_sql import db,user
+from create_sql import db,user,messages
 import os
 import random
 from flask_wtf import CSRFProtect
@@ -11,6 +11,7 @@ from flask_mail import Mail,Message
 # import uuid
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_wtf import FlaskForm,CSRFProtect
+from flask_wtf.file import FileAllowed,FileField,FileRequired
 # ,CSRFProtect
 from wtforms import StringField,PasswordField,HiddenField
 from wtforms.validators import DataRequired,Length,EqualTo,Email,ValidationError
@@ -93,6 +94,7 @@ class regfrom(FlaskForm):
     password = PasswordField('密码',validators=[DataRequired("密码必须输入")])
     email = StringField('邮箱',validators=[DataRequired("邮箱必须输入")])
     active = StringField('激活码',validators=[DataRequired("激活码必须输入")])
+    file = FileField('upload image',validators=[FileRequired(),FileAllowed(['jpg','jpeg','gif','png','bmp'])])
 
 
 
@@ -134,11 +136,14 @@ def gr():
         for i in data:
             return render_template("gr.html",image=i.image,name=i.name)
 
+# user = user()
 @app.route("/gz",methods=['GET','POST'])
 def gz():
+
     name = request.form.get("name")
     fun = request.form.get("follow")
     User = user.query.filter_by(name=name).first()
+
     if fun == "follow":
         if not User:
             flash("用户不存在")
@@ -206,7 +211,11 @@ def login():
             data = user.query.filter(user.name==username).all()
             for i in data:
                 if check_password_hash(i.password,passwd) == True:
-                    return render_template("index.html",name=username)
+                    data = user.query.filter(user.name==username).all()
+                    for i in data:
+                        session['id'] = i.id
+                        session['username'] = username
+                        return render_template("index.html",name=username)
                 # return render_template("login.html")
                 else:
                     return "<script>alert('登录失败，请返回!!');window.history.go(-1)</script>"
@@ -330,7 +339,7 @@ def register1():
 def logout():
     #return render_template('from.html')
     print(session.pop('username'))
-    return render_template("from.html")
+    return redirect(url_for('login'))
 @app.route('/grjs')
 def grjs():
     name = session['username']
@@ -344,7 +353,9 @@ def kysh():
 @app.route('/xx')
 def xx():
     name = session['username']
-    return render_template('xx.html',name=name)
+    data = user.query.filter(user.id==session['id']).first()
+    data = data.messages
+    return render_template("xx.html",name=name,data=data)
 @app.route('/zygh')
 def zygh():
     name = session['username']
@@ -497,7 +508,61 @@ def txfile():
             for i in data_image:
                 return render_template("txfile.html",file=i.image)
         else:
-            return "<script>alert('上传文件不符合');window.history.go(-1)</script>"
+            return "<script>alert('上传文件不符合');window.history.go(-1)</script>"\
+
+@app.route('/mfile',methods=['GET','POST'])
+def mfile():
+    if request.method == 'GET':
+        render_template("message_file.html")
+    else:
+        file_url = r"C:\Users\Think\Desktop\gitfile\网站建设\static\img"
+        image_type = ['.jpg', '.png', '.jpeg', '.gif', '.bmp']
+        a = ''
+        for i in range(1,20):
+            b = random.choice("abcdefghijklmnoqprstuvwsvz12234567890")
+            a += b
+        title = request.form.get('title')
+        data = messages.query.filter(messages.title==title).all()
+        file = request.files.get("image")
+        for i in image_type:
+            filename = os.path.splitext(file.filename)
+            filename = a + filename[1]
+            file.save(os.path.join(file_url,filename))
+            for i in data:
+                i.image = filename
+                db.session.add(i)
+                db.session.commit()
+                flash("上传完成")
+                return redirect(url_for('xx'))
+        else:
+            return "<script>alert('文件上传失败');window.history.go(-1)</script>"
+
+@app.route('/message',methods=['GET','POST'])
+def message():
+    name = session['username']
+    if request.method == 'GET':
+        return render_template("message.html")
+    else:
+        # dataname = user.query.filter(user.name==session['id']).all()
+        title = request.form.get('title')
+        message = request.form.get('message')
+        # for i in dataname:
+        data = messages(title=title,message=message,name_id=session['id'])
+        db.session.add(data)
+        db.session.commit()
+        return render_template("message_file.html",title=title)
+
+@app.route('/kjwz')
+def kjwz():
+    data = messages.query.all()
+    return render_template("kjwz.html",data=data,name=session['username'])
+
+@app.route('/wz/<title>',methods=['GET'])
+def wz(title):
+    data = messages.query.filter(messages.title==title).all()
+    return render_template("wz.html",name=session['username'],data=data)
+
+
 @app.errorhandler(404)
 def error(e):
     print(e)

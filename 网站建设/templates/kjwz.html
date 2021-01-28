@@ -11,6 +11,10 @@
     .span1 {
 		color: brown;
 	}
+	              .img22{
+					  margin-top: 10px;
+                  width:170px; height:170px; border-radius:50%;
+              }
 			  img{
 				  width: 680px;
 				  height: 350px;
@@ -21,7 +25,19 @@
 				  width:300px;
 				  height: 70px;
 			  }
+            .img{
+            margin-top: 10px;
+            width:150px; height:150px; border-radius:50%;
+            margin-right: 30px;
+
+        }
   </style>
+
+        <script>
+    function formSubmit(){
+    document.loginInfo.submit();
+    }
+    </script>
 	</head>
 
 	<body>
@@ -36,29 +52,6 @@
 					<button>
           <span></span><span></span><span></span>
         </button>
-					<ul class="layui-nav" lay-filter="">
-												<li class="layui-nav-item">
-							<a href="/sy">官网</a>
-						</li>
-						<li class="layui-nav-item">
-							<a href="/">首页</a>
-						</li>
-						<li class="layui-nav-item">
-							<a href="/grjs">个人介绍</a>
-						</li>
-						<li class="layui-nav-item ">
-							<a href="/kysh">课余生活</a>
-						</li>
-						<li class="layui-nav-item layui-this">
-							<a href="/xx">学校</a>
-						</li>
-						<li class="layui-nav-item">
-							<a href="/zygh">职业规划</a>
-						</li>
-						<li class="layui-nav-item">
-							<a href="/lyb">留言板</a>
-						</li>
-					</ul>
 				</div>
 			</div>
 		</div>
@@ -69,19 +62,24 @@
 				<p class="en">My Message</p>
 			</div>
 		</div>
-		<div align="center" class="main-about">
-			<a href="/message"><input type="submit" value="添加文章"/></a>
+        <div align="center" class="main-about">
+<!--			<a href="/message"><input type="submit" value="添加文章"/></a>-->
 		</div>
 		<!-- main部分 -->
 		<div class="xxtp">
 			{% for i in data %}
-			<div><img src="./static/img/{{i.image}}" />
+			<form method="post" action="/gr">
+			<input type="hidden" name="name" value="{{i.users.name}}" />
+			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<!--			<a href="/gr" name="i.name"><img src="./static/img/{{i.users.image}}" class="img" ></a>-->
+			<div><input type="image" src="./static/img/{{i.users.image}}" class="img22" onclick="formSubmit()";><img src="./static/img/{{i.image}}" />
 				<h2>
 					<a href="/wz/{{i.title}}" name="title">{{i.title}}</a>
 				</h2>
 			</div>
 			<div class="main-about">
 			</div>
+				</form>
 			{% endfor %}
 		</div>
 		<!-- footer部分 -->
