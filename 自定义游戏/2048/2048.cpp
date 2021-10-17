@@ -12,6 +12,7 @@ int map[4][4] = { 0 };
 void print_map();
 void randvalue();
 bool judge();
+void init();
 struct spares
 {
 	int nums[2];
@@ -31,6 +32,7 @@ int main()
 			command = _getch();
 		}
 		res = judge();
+		system("cls");
 	}
 	printf("游戏结束\n%d", spare[0].nums[0]);
 	return 0;
@@ -65,6 +67,7 @@ void randvalue()
 	//			ii=false;
 	//		}
 	//	}
+	struct spares spare[16] = { 0 };
 	for (int i = 0; i < SIZE; i++)
 	{
 		for (int j = 0; j < SIZE; j++)
@@ -72,15 +75,11 @@ void randvalue()
 			if (map[i][j] == 0) spare[iii++] = { i,j };
 		}
 	}
-	for (int i = 0; i < 16; i++)
-	{
-		printf("%4d%4d\n", spare[i].nums[0], spare[i].nums[1]);
-	}
+	printf("\n");
 	jjj = random(iii);
 	x_new = spare[jjj].nums[0];
 	y_new = spare[jjj].nums[1];
 	map[x_new][y_new] = 2;
-	spare->nums = { 0 };
 }
 
 bool judge()
