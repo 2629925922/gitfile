@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <title>制梦空间</title>
+    <style type="text/css">
+        *{
+            margin:0;
+            padding:0;
+        }
+        .img
+        {
+            background-image:url("./images/bj1.jpg");
+            background-size:cover;
+            height:760px;
+            padding-top:15%;
+            padding-left:30%;
+            
+        }
+        .d0 {width:100%}
+        .img div:nth-child(2) div{
+            padding-top:20%;
+            padding-left:25%;
+        }
+        .img div:nth-child(2) div{
+            -webkit-animation:roate 2s infinite;
+        }
+        @keyframes roate{
+            from{padding-top:20%}
+            to{padding-top:25%}
+        }
+        @media (max-width:892px)
+        {
+            .img {padding-left:10%;padding-top:50%}
+            .img div:nth-child(2) div{padding-left:40%;padding-top:60%}
+        }
+    </style>
+</head>
+<body>
+    <div class=".container-fluid img">
+        <div class="row d0">
+            <div class="col-sm-12 col">
+                <img class="img-fluid" src="./images/zmkj.png" />
+            </div>
+        </div>
+        <div class="row d0">
+            <div class="col-sm-12 col">
+                <img class="img-fluid" src="./images/tb.png"/>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
