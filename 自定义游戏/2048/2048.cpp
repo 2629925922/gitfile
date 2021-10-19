@@ -1,4 +1,4 @@
-ï»¿#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <stdbool.h>
@@ -13,7 +13,6 @@ int score = 0;
 void print_map();
 void randvalue();
 bool judge();
-//void init();
 struct spares
 {
 	int nums[2];
@@ -37,18 +36,18 @@ int main()
 			command = _getch();
 			getcommand(command);
 		}
-		//res = judge();
-		//system("cls");
+		res = judge();
+		system("cls");
 	}
-	printf("æ¸¸æˆç»“æŸ\n%d", spare[0].nums[0]);
+	printf("ÓÎÏ·½áÊø\n%d", spare[0].nums[0]);
 	return 0;
 }
 
 void print_map()
 {
-	printf("2048å°æ¸¸æˆ\n");
-	printf("wæ˜¯ä¸Šï¼Œsæ˜¯ä¸‹ï¼Œaæ˜¯å·¦ï¼Œdæ˜¯å³\n");
-	printf("å½“å‰å¾—åˆ†: %d\n", score);
+	printf("2048Ğ¡ÓÎÏ·\n");
+	printf("wÊÇÉÏ£¬sÊÇÏÂ£¬aÊÇ×ó£¬dÊÇÓÒ\n");
+	printf("µ±Ç°µÃ·Ö: %d\n", score);
 	randvalue();
 	for (int i = 0; i < SIZE; i++)
 	{
@@ -62,18 +61,8 @@ void print_map()
 
 void randvalue()
 {
-	//	bool ii = true;
 	int x_new, y_new, jjj;
 	int iii = 0;
-	//	while(ii)
-	//	{	
-	//		x_new = random(3),y_new =random(3);
-	//		if(map[x_new][y_new] == 0)
-	//		{
-	//			map[x_new][y_new] = 2;
-	//			ii=false;
-	//		}
-	//	}
 	struct spares spare[16] = { 0 };
 	for (int i = 0; i < SIZE; i++)
 	{
@@ -146,8 +135,8 @@ void down()
 				}
 				else
 				{
-					map[++k][i] = map[j][i];
-					if (j != k) { map[j][i] = 0; }
+					map[--k][i] = map[j][i];
+					if (j != k) map[j][i] = 0; 
 				}
 			}
 		}
@@ -175,7 +164,7 @@ void left()
 				else
 				{
 					map[i][++k] = map[i][j];
-					if (j != k) { map[i][ij] = 0; }
+					if (j != k) { map[i][j] = 0; }
 				}
 			}
 		}
@@ -186,7 +175,7 @@ void right()
 {
 	for (int i = 0; i < SIZE; i++)
 	{
-		for (int j = 2, k = 3; j < SIZE; ++j)
+		for (int j = 2, k = 3; j >= 0; --j)
 		{
 			if (map[i][j] > 0)
 			{
@@ -202,8 +191,8 @@ void right()
 				}
 				else
 				{
-					map[i][++k] = map[i][j];
-					if (j != k) { map[i][ij] = 0; }
+					map[i][--k] = map[i][j];
+					if (j != k) { map[i][j] = 0; }
 				}
 			}
 		}
@@ -212,7 +201,14 @@ void right()
 
 bool judge()
 {
-	if (map[spare[0].nums[0]][spare[0].nums[1]] != 0) return false;
-	return true;
+	for(int i=0;i<SIZE;i++)
+	{
+		for(int j=0;j<SIZE;i++)
+		{
+			if(map[i][j] == map[i][j+1] || map[j][i] == map[j+1][i]) return true;
+		}
+	}
+	return false;
+	  
 }
 
