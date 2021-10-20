@@ -1,0 +1,3 @@
+dev c++ 使用ege图形库: https://blog.csdn.net/u013414710/article/details/52909772
+下载 dev c++  5.15版本 ： https://devcpp.gitee.io/ 
+ege图形库官网  ：https://xege.org/
