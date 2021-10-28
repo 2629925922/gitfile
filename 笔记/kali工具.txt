@@ -1,0 +1,40 @@
+﻿信息收集  ：
+  nmap  扫描ip的信息              nikto -h   查看网站有否漏洞              arp-scan  -l   # 查看内网所有ip               AWVS   查看网站目录       wafwoof    扫描网站有无waf
+dirbuster    爆破web目录      Cewl   分析密码         wapiti    漏洞扫描      wapiti  漏洞应用扫描         w3af    基于python的web漏洞扫描器       Wamp   漏洞扫描         webdirscan   爆破web目录
+netdiscover  扫描本地网络主机
+木马编写 ：
+ msfvenom   #生成木马           
+
+漏洞利用 ：
+  msfconsole     漏洞代码利用     searchsploit     软件漏洞查找利用工具        
+
+webshell ：
+   Weevely    liunx的菜刀工具            webacoo     菜刀工具
+ 
+提权 ：
+   searchsploit    脏牛              
+
+sql注入  ：
+  sqlmap    各种的注入神器
+
+xss  :
+   beef     xss牛
+
+抓包工具   :
+   burpsuit  抓包改包          wireshark    抓包
+字典生成器:
+   john  the  Ripper    生成密码字典              Hydra   密码爆破         crunch  自动生成密码字典
+
+快速密码破解工具  :  john       medusa  ssh破解       hydra  ssh破解     fcrackzip   压缩包密码破解
+ 
+下载工具 ：
+  git       wget            apt-get   install                HTTrack
+web代理
+  webScarab   
+获取ssl和tls信息
+   sslscan           sslyze
+wrodpress的专业安全扫描仪
+wpscan 
+
+快速查找文件 :  locate  文件名
+快速查找本段ip地址:    netdiscover  - i  eth0  -r   ip地址段                或者               arp-scan  -l

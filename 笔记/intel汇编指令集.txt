@@ -1,0 +1,285 @@
+  1 X86和X87汇编指令大全（有注释）  
+  2 ---------- 一、数据传输指令 ----------------------------------------------------  
+  3 它们在存贮器和寄存器、寄存器和输入输出端口之间传送数据.  
+  4 1. 通用数据传送指令.  
+  5     MOV     传送字或字节.  
+  6     MOVSX   先符号扩展,再传送.  
+  7     MOVZX   先零扩展,再传送.  
+  8     PUSH    把字压入堆栈.  
+  9     POP     把字弹出堆栈.  
+ 10     PUSHA   把AX,CX,DX,BX,SP,BP,SI,DI依次压入堆栈.  
+ 11     POPA    把DI,SI,BP,SP,BX,DX,CX,AX依次弹出堆栈.  
+ 12     PUSHAD  把EAX,ECX,EDX,EBX,ESP,EBP,ESI,EDI依次压入堆栈.  
+ 13     POPAD   把EDI,ESI,EBP,ESP,EBX,EDX,ECX,EAX依次弹出堆栈.  
+ 14     BSWAP   交换32位寄存器里字节的顺序  
+ 15     XCHG    交换字或字节.(至少有一个操作数为寄存器,段寄存器不可作为操作数)  
+ 16     CMPXCHG 比较并交换操作数.(第二个操作数必须为累加器AL/AX/EAX)  
+ 17     XADD    先交换再累加.(结果在第一个操作数里)  
+ 18     XLAT    字节查表转换.----BX指向一张256字节的表的起点,AL为表的索引值(0-255,即0-FFH);返回AL为查表结果.([BX+AL]->AL)  
+ 19 2. 输入输出端口传送指令.  
+ 20     IN      I/O端口输入. ( 语法: IN   累加器,    {端口号│DX} )  
+ 21     OUT     I/O端口输出. ( 语法: OUT {端口号│DX},累加器 )输入输出端口由立即方式指定时,    其范围是 0-255; 由寄存器 DX 指定时,其范围是    0-65535.  
+ 22 3. 目的地址传送指令.  
+ 23     LEA     装入有效地址.例: LEA DX,string ;把偏移地址存到DX.  
+ 24     LDS     传送目标指针,把指针内容装入DS.例: LDS SI,string   ;把段地址:偏移地址存到DS:SI.  
+ 25     LES     传送目标指针,把指针内容装入ES.例: LES DI,string   ;把段地址:偏移地址存到ES:DI.  
+ 26     LFS     传送目标指针,把指针内容装入FS.例: LFS DI,string   ;把段地址:偏移地址存到FS:DI.  
+ 27     LGS     传送目标指针,把指针内容装入GS.例: LGS DI,string   ;把段地址:偏移地址存到GS:DI.  
+ 28     LSS     传送目标指针,把指针内容装入SS.例: LSS DI,string   ;把段地址:偏移地址存到SS:DI.  
+ 29 4. 标志传送指令.  
+ 30     LAHF    标志寄存器传送,把标志装入AH.  
+ 31     SAHF    标志寄存器传送,把AH内容装入标志寄存器.  
+ 32     PUSHF   标志入栈.  
+ 33     POPF    标志出栈.  
+ 34     PUSHD   32位标志入栈.  
+ 35     POPD    32位标志出栈.  
+ 36 ---------- 二、算术运算指令 ----------------------------------------------------  
+ 37     ADD     加法.  
+ 38     ADC     带进位加法.  
+ 39     INC     加 1.  
+ 40     AAA     加法的ASCII码调整.  
+ 41     DAA     加法的十进制调整.  
+ 42     SUB     减法.  
+ 43     SBB     带借位减法.  
+ 44     DEC     减 1.  
+ 45     NEG     求反(以    0 减之).  
+ 46     CMP     比较.(两操作数作减法,仅修改标志位,不回送结果).  
+ 47     AAS     减法的ASCII码调整.  
+ 48     DAS     减法的十进制调整.  
+ 49     MUL     无符号乘法.结果回送AH和AL(字节运算),或DX和AX(字运算),  
+ 50     IMUL    整数乘法.结果回送AH和AL(字节运算),或DX和AX(字运算),  
+ 51     AAM     乘法的ASCII码调整.  
+ 52     DIV     无符号除法.结果回送:商回送AL,余数回送AH, (字节运算);或 商回送AX,余数回送DX, (字运算).  
+ 53     IDIV    整数除法.结果回送:商回送AL,余数回送AH, (字节运算);或 商回送AX,余数回送DX, (字运算).  
+ 54     AAD     除法的ASCII码调整.  
+ 55     CBW     字节转换为字. (把AL中字节的符号扩展到AH中去)  
+ 56     CWD     字转换为双字. (把AX中的字的符号扩展到DX中去)  
+ 57     CWDE    字转换为双字. (把AX中的字符号扩展到EAX中去)  
+ 58     CDQ     双字扩展. (把EAX中的字的符号扩展到EDX中去)  
+ 59 ---------- 三、逻辑运算指令 ----------------------------------------------------  
+ 60     AND     与运算.  
+ 61     OR      或运算.  
+ 62     XOR     异或运算.  
+ 63     NOT     取反.  
+ 64     TEST    测试.(两操作数作与运算,仅修改标志位,不回送结果).  
+ 65     SHL     逻辑左移.  
+ 66     SAL     算术左移.(=SHL)  
+ 67     SHR     逻辑右移.  
+ 68     SAR     算术右移.(=SHR)  
+ 69     ROL     循环左移.  
+ 70     ROR     循环右移.  
+ 71     RCL     通过进位的循环左移.  
+ 72     RCR     通过进位的循环右移.  
+ 73               以上八种移位指令,其移位次数可达255次.  
+ 74               移位一次时, 可直接用操作码. 如 SHL AX,1.  
+ 75               移位>1次时, 则由寄存器CL给出移位次数.  
+ 76               如 MOV CL,04   SHL AX,CL  
+ 77 ---------- 四、串指令 ----------------------------------------------------------  
+ 78               DS:SI 源串段寄存器 :源串变址.  
+ 79               ES:DI 目标串段寄存器:目标串变址.  
+ 80               CX 重复次数计数器.  
+ 81               AL/AX 扫描值.  
+ 82               D标志   0表示重复操作中SI和DI应自动增量; 1表示应自动减量.  
+ 83               Z标志   用来控制扫描或比较操作的结束.  
+ 84     MOVS    串传送.( MOVSB 传送字符. MOVSW 传送字. MOVSD 传送双字. )  
+ 85     CMPS    串比较.( CMPSB 比较字符. CMPSW 比较字. )  
+ 86     SCAS    串扫描.把AL或AX的内容与目标串作比较,比较结果反映在标志位.  
+ 87     LODS    装入串.把源串中的元素(字或字节)逐一装入AL或AX中.( LODSB 传送字符. LODSW 传送字.    LODSD 传送双字. )  
+ 88     STOS    保存串.是LODS的逆过程.  
+ 89     REP         当CX/ECX<>0时重复.  
+ 90     REPE/REPZ   当ZF=1或比较结果相等,且CX/ECX<>0时重复.  
+ 91     REPNE/REPNZ 当ZF=0或比较结果不相等,且CX/ECX<>0时重复.  
+ 92     REPC        当CF=1且CX/ECX<>0时重复.  
+ 93     REPNC       当CF=0且CX/ECX<>0时重复.  
+ 94 ---------- 五、程序转移指令 ----------------------------------------------------  
+ 95 1. 无条件转移指令 (长转移)  
+ 96     JMP         无条件转移指令  
+ 97     CALL        过程调用  
+ 98     RET/RETF    过程返回.  
+ 99 2. 条件转移指令   (短转移,-128到+127的距离内)( 当且仅当(SF XOR OF)=1时,OP1<OP2 )  
+100     JA/JNBE     不小于或不等于时转移.  
+101     JAE/JNB     大于或等于转移.  
+102     JB/JNAE     小于转移.  
+103     JBE/JNA     小于或等于转移.  
+104         以上四条,测试无符号整数运算的结果(标志C和Z).  
+105     JG/JNLE     大于转移.  
+106     JGE/JNL     大于或等于转移.  
+107     JL/JNGE     小于转移.  
+108     JLE/JNG     小于或等于转移.  
+109         以上四条,测试带符号整数运算的结果(标志S,O和Z).  
+110     JE/JZ       等于转移.  
+111     JNE/JNZ     不等于时转移.  
+112     JC          有进位时转移.  
+113     JNC         无进位时转移.  
+114     JNO         不溢出时转移.  
+115     JNP/JPO     奇偶性为奇数时转移.  
+116     JNS         符号位为 "0" 时转移.  
+117     JO          溢出转移.  
+118     JP/JPE      奇偶性为偶数时转移.  
+119     JS          符号位为 "1" 时转移.  
+120 3. 循环控制指令(短转移)  
+121     LOOP            CX不为零时循环.  
+122     LOOPE/LOOPZ     CX不为零且标志Z=1时循环.  
+123     LOOPNE/LOOPNZ   CX不为零且标志Z=0时循环.  
+124     JCXZ            CX为零时转移.  
+125     JECXZ           ECX为零时转移.  
+126 4. 中断指令  
+127     INT         中断指令  
+128     INTO        溢出中断  
+129     IRET        中断返回  
+130 5. 处理器控制指令  
+131     HLT         处理器暂停,  直到出现中断或复位信号才继续.  
+132     WAIT        当芯片引线TEST为高电平时使CPU进入等待状态.  
+133     ESC         转换到外处理器.  
+134     LOCK        封锁总线.  
+135     NOP         空操作.  
+136     STC         置进位标志位.  
+137     CLC         清进位标志位.  
+138     CMC         进位标志取反.  
+139     STD         置方向标志位.  
+140     CLD         清方向标志位.  
+141     STI         置中断允许位.  
+142     CLI         清中断允许位.  
+143 ---------- 六、伪指令 ----------------------------------------------------------  
+144     DW          定义字(2字节).  
+145     PROC        定义过程.  
+146     ENDP        过程结束.  
+147     SEGMENT     定义段.  
+148     ASSUME      建立段寄存器寻址.  
+149     ENDS        段结束.  
+150     END         程序结束.  
+151 ---------- 七、处理机控制指令：标志处理指令 ------------------------------------  
+152     CLC     进位位置0指令  
+153     CMC     进位位求反指令  
+154     STC     进位位置为1指令  
+155     CLD     方向标志置1指令  
+156     STD     方向标志位置1指令  
+157     CLI     中断标志置0指令  
+158     STI     中断标志置1指令  
+159     NOP     无操作  
+160     HLT     停机  
+161     WAIT    等待  
+162     ESC     换码  
+163     LOCK    封锁  
+164 ========== 浮点运算指令集 ======================================================  
+165 ---------- 一、控制指令(带9B的控制指令前缀F变为FN时浮点不检查，机器码去掉9B)----  
+166 FINIT                 初始化浮点部件                  机器码  9B DB E3  
+167 FCLEX                 清除异常                         机器码  9B DB E2  
+168 FDISI                 浮点检查禁止中断                 机器码  9B DB E1  
+169 FENI                  浮点检查禁止中断二            机器码  9B DB E0  
+170 WAIT                  同步CPU和FPU                    机器码  9B  
+171 FWAIT                 同步CPU和FPU                    机器码  D9 D0  
+172 FNOP                  无操作                          机器码  DA E9  
+173 FXCH                  交换ST(0)和ST(1)                机器码  D9 C9  
+174 FXCH ST(i)            交换ST(0)和ST(i)                机器码  D9 C1iii  
+175 FSTSW ax              状态字到ax                       机器码  9B DF E0  
+176 FSTSW   word ptr mem  状态字到mem                      机器码  9B DD mm111mmm  
+177 FLDCW   word ptr mem  mem到状态字                      机器码  D9 mm101mmm  
+178 FSTCW   word ptr mem  控制字到mem                      机器码  9B D9 mm111mmm  
+179   
+180 FLDENV  word ptr mem  mem到全环境                      机器码  D9 mm100mmm  
+181 FSTENV  word ptr mem  全环境到mem                      机器码  9B D9 mm110mmm  
+182 FRSTOR  word ptr mem  mem到FPU状态                    机器码  DD mm100mmm  
+183 FSAVE   word ptr mem  FPU状态到mem                    机器码  9B DD mm110mmm  
+184   
+185 FFREE ST(i)           标志ST(i)未使用                   机器码  DD C0iii  
+186 FDECSTP               减少栈指针1->0 2->1             机器码  D9 F6  
+187 FINCSTP               增加栈指针0->1 1->2             机器码  D9 F7  
+188 FSETPM                浮点设置保护                       机器码  DB E4  
+189 ---------- 二、数据传送指令 ----------------------------------------------------  
+190 FLDZ                  将0.0装入ST(0)                  机器码  D9 EE  
+191 FLD1                  将1.0装入ST(0)                  机器码  D9 E8  
+192 FLDPI                 将π装入ST(0)                    机器码  D9 EB  
+193 FLDL2T                将ln10/ln2装入ST(0)             机器码  D9 E9  
+194 FLDL2E                将1/ln2装入ST(0)                机器码  D9 EA  
+195 FLDLG2                将ln2/ln10装入ST(0)             机器码  D9 EC  
+196 FLDLN2                将ln2装入ST(0)                  机器码  D9 ED  
+197   
+198 FLD    real4 ptr mem  装入mem的单精度浮点数             机器码  D9 mm000mmm  
+199 FLD    real8 ptr mem  装入mem的双精度浮点数             机器码  DD mm000mmm  
+200 FLD   real10 ptr mem  装入mem的十字节浮点数             机器码  DB mm101mmm  
+201   
+202 FILD    word ptr mem  装入mem的二字节整数              机器码  DF mm000mmm  
+203 FILD   dword ptr mem  装入mem的四字节整数              机器码  DB mm000mmm  
+204 FILD   qword ptr mem  装入mem的八字节整数              机器码  DF mm101mmm  
+205   
+206 FBLD   tbyte ptr mem  装入mem的十字节BCD数            机器码  DF mm100mmm  
+207   
+208 FST    real4 ptr mem  保存单精度浮点数到mem             机器码  D9 mm010mmm  
+209 FST    real8 ptr mem  保存双精度浮点数到mem             机器码  DD mm010mmm  
+210   
+211 FIST    word ptr mem  保存二字节整数到mem              机器码  DF mm010mmm  
+212 FIST   dword ptr mem  保存四字节整数到mem              机器码  DB mm010mmm  
+213   
+214 FSTP   real4 ptr mem  保存单精度浮点数到mem并出栈      机器码  D9 mm011mmm  
+215 FSTP   real8 ptr mem  保存双精度浮点数到mem并出栈      机器码  DD mm011mmm  
+216 FSTP  real10 ptr mem  保存十字节浮点数到mem并出栈      机器码  DB mm111mmm  
+217   
+218 FISTP   word ptr mem  保存二字节整数到mem并出栈           机器码  DF mm011mmm  
+219 FISTP  dword ptr mem  保存四字节整数到mem并出栈           机器码  DB mm011mmm  
+220 FISTP  qword ptr mem  保存八字节整数到mem并出栈           机器码  DF mm111mmm  
+221   
+222 FBSTP  tbyte ptr mem  保存十字节BCD数到mem并出栈     机器码  DF mm110mmm  
+223   
+224 FCMOVB                ST(0),ST(i) <时传送              机器码  DA C0iii  
+225 FCMOVBE               ST(0),ST(i) <=时传送             机器码  DA D0iii  
+226 FCMOVE                ST(0),ST(i) =时传送             机器码  DA C1iii  
+227 FCMOVNB               ST(0),ST(i) >=时传送             机器码  DB C0iii  
+228 FCMOVNBE              ST(0),ST(i) >时传送              机器码  DB D0iii  
+229 FCMOVNE               ST(0),ST(i) !=时传送            机器码  DB C1iii  
+230 FCMOVNU               ST(0),ST(i) 有序时传送        机器码  DB D1iii  
+231 FCMOVU                ST(0),ST(i) 无序时传送        机器码  DA D1iii  
+232 ---------- 三、比较指令   --------------------------------------------------------  
+233 FCOM                  ST(0)-ST(1)                      机器码  D8 D1  
+234 FCOMI                 ST(0),ST(i)  ST(0)-ST(1)         机器码  DB F0iii  
+235 FCOMIP                ST(0),ST(i)  ST(0)-ST(1)并出栈   机器码  DF F0iii  
+236 FCOM   real4 ptr mem  ST(0)-实数mem                      机器码  D8 mm010mmm  
+237 FCOM   real8 ptr mem  ST(0)-实数mem                      机器码  DC mm010mmm  
+238   
+239 FICOM   word ptr mem  ST(0)-整数mem                      机器码  DE mm010mmm  
+240 FICOM  dword ptr mem  ST(0)-整数mem                      机器码  DA mm010mmm  
+241 FICOMP  word ptr mem  ST(0)-整数mem并出栈               机器码  DE mm011mmm  
+242 FICOMP dword ptr mem  ST(0)-整数mem并出栈               机器码  DA mm011mmm  
+243   
+244 FTST                  ST(0)-0                          机器码  D9 E4  
+245 FUCOM  ST(i)          ST(0)-ST(i)                      机器码  DD E0iii  
+246 FUCOMP ST(i)          ST(0)-ST(i)并出栈                   机器码  DD E1iii  
+247 FUCOMPP               ST(0)-ST(1)并二次出栈             机器码  DA E9  
+248 FXAM                  ST(0)规格类型                    机器码  D9 E5  
+249 ---------- 四、运算指令   --------------------------------------------------------  
+250 FADD                  把目的操作数 (直接接在指令后的变量或堆栈缓存器) 与来源操作数 (接在目的操作数后的变量或堆栈缓存器)  相加，并将结果存入目的操作数  
+251 FADDP  ST(i),ST       这个指令是使目的操作数加上 ST  缓存器，并弹出 ST 缓存器，而目的操作数必须是堆栈缓存器的其中之一，最后不管目的操作数为何，经弹出一次后，目的操作数会变成上一个堆栈缓存器了  
+252 FIADD                 FIADD 是把 ST   加上来源操作数，然后再存入 ST 缓存器，来源操作数必须是字组整数或短整数形态的变数  
+253   
+254 FSUB                  减  
+255 FSUBP  
+256 FSUBR                 减数与被减数互换  
+257 FSUBRP  
+258 FISUB  
+259 FISUBR  
+260   
+261 FMUL                  乘  
+262 FMULP  
+263 FIMUL  
+264   
+265 FDIV                  除  
+266 FDIVP  
+267 FDIVR  
+268 FDIVRP  
+269 FIDIV  
+270 FIDIVR  
+271   
+272 FCHS                  改变 ST 的正负值  
+273   
+274 FABS                  把 ST  之值取出，取其绝对值后再存回去。  
+275   
+276 FSQRT                 将 ST  之值取出，开根号后再存回去。  
+277   
+278 FSCALE                这个指令是计算 ST*2^ST(1)之值，再把结果存入 ST 里而 ST(1)   之值不变。ST(1)  必须是在 -32768 到 32768 (-215 到 215 )之间的整数，如果超过这个范围计算结果无法确定，如果不是整数 ST(1)    会先向零舍入成整数再计算。所以为安全起见，最好是由字组整数载入到 ST(1) 里。  
+279   
+280 FRNDINT               这个指令是把 ST 的数值舍入成整数，FPU    提供四种舍入方式，由 FPU 的控制字组(control    word)中的 RC 两个位决定  
+281                           RC    舍入控制  
+282                           00    四舍五入  
+283                           01    向负无限大舍入  
+284                           10    向正无限大舍入  
+285                           11    向零舍去  

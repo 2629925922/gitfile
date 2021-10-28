@@ -1,0 +1,609 @@
+python的数据类型:  str字符型   int整型  float浮点型   complex复数型   True跟Flase布尔型
+类型转化:   因为不同的数据类型，进行运算时，它的运算规则不一样    list(转化列表)   tuple(转化元组)   set(转化集合)    dict(转化字典)
+pass关键字:   进行占位，代替未写好的代码
+json字符串:     '{"name":"mhp","password":123456}'  '["mhp","zll","zml"]'    '("af","zlkjkl","dafas")'       #json字符串里面必须是双引号，外面是单引号
+
+Ⅰ.chr()方法:将ACSII值转化为基础字符
+chr(65) 
+‘A’
+Ⅱ.ord():将字符转化为ASCII值
+ord(‘A’) 
+65
+
+python数据     转换       json
+  True                    true
+  Flase                   flase
+  字符串                   字符串
+  字典                    对象
+  列表，元组 (集合是不能进行转化)              数组        
+
+b = '{"name":"mhp","password":123465}'
+a = json.loads(b)                  #loads可以将json字符串转化为python里的数据
+
+b = ['mhp',123465,"adfasf"]
+a = json.dumps(b)                   #dumps可以将数据转化为json字符串
+
+字典的打印
+a = {'name':'mhp','password':123456}
+print(a.keys())         #dict_keys(['name', 'password'])
+print(a.values())          #dict_keys(['mhp', 123456])
+进行遍历打印
+for i in a.keys():
+    print(i)                     #name,password	 
+
+
+eval()内置函数 可以执行字符串里的代码
+a = 'input("请输入你的名字")'
+eval(a)
+
+集合 :   {'name','password','email'}
+集合是一个无序的，里面的内容不重复，位置随机分布。
+
+公用方法:  
++ 用于字符串，元组，列表的拼接
+- 用于集合求差集
+* 用于字符串，元组，列表重复多次打印
+in 成员运算符(判断内容是否存在)
+'a' in ['a','n','c']
+'a' in 'agasaa'
+'a' in ('a','b','aa')
+用于字典是判断key是否存在
+'name' in {'name':'mhp','password':'132465'}
+for ... in ... 循环遍历
+a = ['132','89754','dadsfa']
+for i,e in enumerate(a):
+	print(i,e)                  #enumerate循环打印下标值跟值(注意打印字典是打印下标跟key值)
+
+位运算符 <<(左移) >>(右移)    左移或右移n位是移动的是2的n次方，左移n那么右面就补n个0，右移n位那么左面就补n个0。
+正数的符号位是0   负数的符号位是1
+
+python的函数没有一个返回值，那么它的返回就是None
+全局变量在任何位置都可以使用，局部变量只能在函数内部使用（当函数内容定义了一个与全局变量同名的局部变量，函数里优先使用局部变量值）
+使用global关键字可以使一个局部变量变成一个全局变量。
+
+函数返回多个值:
+def fun(a):
+    perimter = 2  * 3.14 * a
+    area = 3.14 * a ** 2
+    return perimter,area                #返回的是一个元组
+perimter,area = fun(3)         #使用拆包方式进行把值分开
+print("圆的周长是{},圆的面积是{}".format(perimter,area))        #format是占位符进行打印值
+
+参数的缺省参数:
+函数的默认参数 ： def fun(name="mhp",password=123456)       #设置默认参数，需重新设置时可以重新传递进行覆盖。
+def fun(name,password,genter):
+	print("你的名字: %s,你的密码: %d,你的性别: %d"%(name,password,genter))
+
+fun("mhp",password=123456,genter="男")                #传参数值时，可以位置参数("mhp")，也可以传关键字参数(password=123456，genter="男")。同时使用时，位置参数必须要在关键字参数的前面
+
+def fun(*args,**kwargs):        # *args是可变的位置参数，**kwargs是可变的关键字参数
+    print("关键字参数是: {}".format(kwargs))            # 打印结果以字典方式出现 
+    a = 0
+    for i in args:
+        a += i
+    return a
+print(fun(1,2,3,4,5,6,name="mhp",password="123456"))
+# 关键字参数是 {"name":"mhp","password":"123456"}
+# 21
+
+id函数返回内存中的地址，和%x配合可以打印出16进制的地址位置
+
+函数的定义：  如果定义的函数重名了，后一个函数会覆盖前一个函数。  (定义函数时，避免定义与内置函数名一样)
+
+递归(实现1~n的和)：
+def fun(num):
+    if num == 0:
+        return 0
+    return fun(num-1) + num
+fun(5)               #结果得出15
+
+python的可变参数: https://www.cnblogs.com/xialiaoliao0911/p/9430491.html
+用三个点“…”做参数占位符,代替参数多个
+python中匿名函数：  https://blog.csdn.net/weixin_44251004/article/details/86652495
+中匿名函数格式:   变量名 = lambda 参数: 表达式
+实例: 
+fun = lambda x : x
+printf(fun(5))      //结果为 54
+匿名函数的常用方法：
+def funs(a,b,fun):
+    c = fun(a,b)
+    return c
+aa = funs(1,2,lambda x,y:x+y)
+print(aa)           # 结果得 3，常使用于回调函数的使用
+
+sort函数    #将列表内容进行有序的排列
+
+高级函数：   
+def test():
+    print("我是test函数")
+    return abc()
+def abc():
+    return aaa
+def aaa():
+    print("我是aaa,我是在abc里的")
+    return 0
+a = test() 
+print(a())         		#结果是：   我是test函数
+							    	我是aaa,我是在abc里的
+								   <function test at 0x000001B6B0169598>
+只打印函数名，只会返回其函数类型跟在内存中的地址。  当函数名加上()时就意味在调用函数。
+def test():
+	print("我是test")
+	
+python中闭包: https://www.cnblogs.com/s-1314-521/p/9763376.html
+实例: 
+def aa(x):
+    def bb(y):
+        nonlocal x
+        x += y
+        return x
+    return bb
+a = aa(10)
+print(a(1))      //得到11
+
+python nonlocal 跟global的区别:  https://www.cnblogs.com/
+brad1994/p/6533267.html
+当使用 nonlocal 时，就声明了该变量不只在嵌套内函数里面
+才有效， 而是在整个大函数里面都有效。nonlocal关键字只在闭包里出现
+
+python中返回函数:  https://www.cnblogs.com/miaorn/p/11622355.html
+实例:
+def aa():
+    fs = []
+    for i in range(1,4):
+        def bb(j):
+            def cc():
+                return j*j
+            return cc
+        fs.append(bb(i))
+    return fs
+
+a,b,c = aa()
+print(a(),b(),c())
+
+装饰器的使用:
+def fun(fn):
+	print("我的fun函数")
+	def inner():
+		print("我的inner函数")
+		fn()
+	return inner
+@fun      #第一件事是调用fun函数，第二件事是把被装饰的函数传递给fn
+def fn():
+	start = time.time()
+	time.sleep(3)
+	end = time.time()
+	sj = end - start
+	print("时间间隔是{}".format(sj))
+#第三件事是当再次调用被装饰的函数fn时，运行的是fun的inner的返回值
+fn()       #结果得 我是fun函数，我是inner函数，时间间隔是3.00035652365秒
+	
+
+python 列表生成式:  https://www.cnblogs.com/yoyoketang/p/9274362.html
+a = [x if x%2==0 else 0 for x in range(1,10)]                #利用if else来进行对for循环遍历判断，生成一个列表
+print(a)                           #[0, 2, 0, 4, 0, 6, 0, 8, 0] 
+
+python dir :https://www.cnblogs.com/jcjc/p/11546933.html    //查看内置方法跟私有方法
+python help：https://blog.csdn.net/weixin_43870522/article/details/96453399   //查看帮助信息
+
+a = 5,b = 3
+5/3    //不能进行分数除法，需要将a的值改为float  a=5.0
+
+python flask框架学习： https://www.jianshu.com/p/6452596c4edb 
+
+python 数据分析: https://www.bilibili.com/video/BV1Hy4y1B7a7?from=search&seid=14522180184510735762
+
+python flask框架实战项目：  https://www.bilibili.com/video/BV1jx411R73z?from=search&seid=13277372218848466593
+
+python inspec模块:https://www.cnblogs.com/duanming/p/11830287.html
+
+Python中*args 和**kwargs的用法： https://www.cnblogs.com/cwind/p/8996000.html
+注意:在函数调用中使用”*”，我们需要元组;在函数调用中使用”**”，我们需要一个字典
+
+python 虚拟环境搭建  ： https://www.cnblogs.com/chjxbt/p/10517952.html     //需配置环境变量
+如果不指定Python版本，默认安装的是Python2的虚拟环境
+# 在python2中，创建虚拟环境
+mkvirtualenv 虚拟环境名称
+例 ：
+mkvirtualenv py_flask
+如果是在python3中，创建虚拟环境，需要指定版本
+mkvirtualenv -p python3 虚拟环境名称
+例 ：
+mkvirtualenv -p python3 py3_flask
+查看所有的虚拟环境命令:   workon
+删除虚拟环境的命令:   rmvirtualenv 虚拟环境名称
+
+
+python 3.5以上自虚拟环境 venv
+使用:  python -m venv 虚拟环境名字
+进入虚拟环境的script目录下，运行activate.bat即可进入虚拟环境
+
+
+flask知识点列表
+1. 渲染到某个模板
+    return render_template('网页名字')
+2. 传递数据到模板
+    return render_template('网页名字'，变量名1=值1，变量名2=值2，....)   //uname='admin'      reutrn render_template('网页名字',uanem=uname)
+    
+    
+3. 模板中展示数据
+    欢迎xxx{{变量名}}登录             //欢迎xxx{{uname}}登录
+4. 路由中如何指定请求方法
+    @app.route('/login',methods=['GET','POST'])
+    def login():
+        代码
+5.  如何判断请求方法
+    @app.route('/login',methods=['GET','POST'])
+    def login():
+        if request.method == 'GET':
+            代码
+        else ：
+            代码
+
+6. 创建flask对象时，默认的模板文件夹叫? 默认的静态资源目录叫?
+    templates
+    static
+
+7. flask request详解: https://www.cnblogs.com/wangjikun/p/6935592.html
+request.argsget('值名')             //获取get请求参数
+request.form.get('值名')             //获取post请求参数
+request.values.get('值名')           //获取get跟post的请求参数
+8. flask session详解: https://www.cnblogs.com/nimingdaoyou/p/9037655.html
+设置session ： session['username'] = name
+使用之前必须设置密钥: app.secret_key='随机字符'
+9. os模块
+os.urandom(24)      //随机24个字符
+10. python操作数据库 : 使用flask_sqlalchemy
+详解: https://www.bilibili.com/video/BV1wE411t7eL?p=5
+进行flask初始化 ： app = Flask(__name__)
+设置密钥: app.secret_key = "afd12132"
+数据库连接地址设置:  mysql://用户名:密码@ip号:端口号/数据库名
+设置动态追踪:  app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = Flase
+创建sqlalchemy对象:  db = SQLALchemy(app)
+定义数据模型 
+ class 类名(db.Model):
+    __tablename__ = "表名"
+    列名 = db.Column(db.类型(字节长度),nullale=True//primary_key=True)      //nullale设置是否可为空，primary_key 设置键值
+数据库增 : 
+变量名 = 类名(列名 = "内容",...) 
+db.session.add(变量名)
+db.session.commit()
+数据库查:
+变量名 = 类名.query.all()                  
+print(变量名.列名)                  //打印所有指定列名内容
+变量名 = 类名.query.filter(类名.列名==内容) 
+for i in 变量名:
+	print(i.列名)                //条件查询
+数据库改
+第一种: 
+变量名 = 类名.query.filter(列名=内容).update({列名:"改的新内容"})
+db.session.commit()
+第二种: 
+变量名 = 类名.query.filter(类名.列名=内容).all()
+for i in 变量名:
+	db.session.add(i)
+	db.session.commit()
+数据删
+变量名 = 类名.query.filter(列名=内容).delete()       //全部删除
+10. 自定义404页面
+@app.errorhandler(404)
+def error(e):
+    print(e)
+    return render_template("404.html")
+注意: 在errorhandler装饰钩子函数下,要返回响应的状态码
+    *在errorhandler装饰的钩子函数中，必须要写一个参数,来接收错误的信息,如果没有参数,就会直接报错
+详解:  https://www.cnblogs.com/yingxiongguixing/p/12006124.html  
+os.path.splitext("文件路径")    分离文件跟后缀名，以元组的形式
+path_01='E:\STH\Foobar2000\install.log'      
+print(os.path.splitext(path_01))         #('E:\\STH\\Foobar2000\\install', '.log')
+uuid模块
+# -*- coding:utf-8 -*-
+import uuid 
+print uuid.uuid1()
+#bf1dfacf-67d8-11e8-9a23-408d5c985711
+print uuid.uuid3(uuid.NAMESPACE_DNS, 'yuanlin')
+#ddb366f5-d4bc-3a20-ac68-e13c0560058f
+print uuid.uuid4()
+#144d622b-e83a-40ea-8ca1-66af8a86261c
+print uuid.uuid5(uuid.NAMESPACE_DNS, 'yuanlin')
+uuid1()：这个是根据当前的时间戳和MAC地址生成的，最后的12个字符408d5c985711对应的就是MAC地址，因为是MAC地址，那么唯一性应该不用说了。但是生成后暴露了MAC地址这就很不好了。
+uuid3()：里面的namespace和具体的字符串都是我们指定的，然后呢···应该是通过MD5生成的，这个我们也很少用到，莫名其妙的感觉。
+uuid4()：这是基于随机数的uuid，既然是随机就有可能真的遇到相同的，但这就像中奖似的，几率超小，因为是随机而且使用还方便，所以使用这个的还是比较多的。
+uuid5()：这个看起来和uuid3()貌似并没有什么不同，写法一样，也是由用户来指定namespace和字符串，不过这里用的散列并不是MD5，而是SHA1.
+
+类
+定义类： 使用class 来定义一个类
+class 类名： 类名一般需要遵守大驼峰命名法，每个单词首字母都大写
+class Student(object):    #类里有哪些特征跟行为
+__init__ 方法里，以参数的形式定义特征，我们称之为属性
+def __init__(self,参数名,...):
+	self.参数名 = 参数名
+# 行为定义为一个个函数，称之为方法
+def 函数名(self):
+	内容
+例如:  s1 = Student('孟海平',18)
+1.调用__new__方法，申请一段内存空间
+2.调用__init__方法,并让self指向申请好的内存空间
+3.让s1也指向创建好的这段内存空间
+
+类的继承:
+class 子类名(父类名)         //单类继承
+class 子类名(父类名1，父类名2，...)                 //多类继承	
+当子类定义属性或方法时，与父类形同，以子类里的为准。
+当子类也定义__init__方法，那么父类的属性是不能直接调用
+需要在子类__init__里加 super().__init__(属性名1,属性名2,...)
+(当既要子类也要父类时，可以supper函数进行引用父类相同的属性跟方法)
+supper(自己子类名,self).父类的方法(参数1,参数2,...)    ==>     super().父类的方法(参数1,参数2,...) 
+例子: 
+class Animal:
+    def __init__(self,name,password):
+        self.name = name
+        self.password = password
+
+class Cat(Animal):
+    def __init__(self,name,password,money):
+        super().__init__(name,password)  #也可以用 Animal.__init__(self)  这里面的self一定要加上
+        self.money = money
+cat = Cat('zll',123456,10)
+print('你的名字: {},你的密码: {},你的存款: {}'.format(cat.name,cat.password,cat.money))
+
+类的魔术方法特点(自动调用，都是__开始,__结尾，方法名都是规定好的，在合适的时候调用)
+def __init__(self)    #在创建对象时，会自动调用这个方法。
+def __del__(self)     #当对象销毁时，自动调用这个方法
+p = Student('mhp',123456)     #这个直接打印会返回一个对象，<__main__.Cat object at 0x000001F27AE0E1D0>
+在打印一个对象的时候，会自动调用__str__()或者__repr__()方法,所以重写这两个方法可以返回指定内容
+def __str__(self):
+     print('你的名字:%s'%(self.name))
+
+dir(p)               #可以查看这个对象的所有的属性名跟方法名
+print(p.__class__)                 #<class '__main__'.Student>      返回其类型跟类名
+print(p.__dict__)           #将对象的属性和值转换为一个字典
+print(p.__doc__)                 #可以查看其使用说明
+print(p.__module__)             #返回其模块
+
+类属性        #定义一个类时，这个变量名处在def方法外跟def__init__():属性外的就是类属性
+class Ppl():
+    type = "人类"
+    def __init__(self,name,password):
+        self.name = name
+        self.password = password
+
+p = Ppl('孟海平',123456)           #p 就是实例化对象           Ppl 就是类对象
+#类属性可以通过类对象获取
+print(Ppl.type)
+#也可以通过实例对象获取
+print(p.type)
+注意:   当修改类属性时，只有通过类对象修改的才是真实的，通过实例对象修改的都是在实例对象自身中创建了一个对象属性，只在当前作用域中可用
+
+类方法      # 通过@calssmethod 装饰器进行修饰的
+静态方法       #通过@staticmethod 装饰器进行修饰的
+calss Mhp():
+	type = "方法"
+	@classmethod
+	def pp(cls):                    #cls是默认的，这个cls指的是类对象，如果一个方法只使用到类属性，可以将这个方法定义为类方法
+		print("这是类方法")
+		print(cls.type)                     #一般类方法跟类属性一起使用
+	@staticmethod
+	def aa():
+		print("这是静态方法")
+实例方法 ： 用到实例对象的属性，self指向调用这个方法的实例对象
+两种调用方式:
+1. 实例对象.方法名 ==> 不需要手动给self传参，会自动将实例对象传递给self
+2. 类对象.方法名 ==> 需要手动给self传参
+实例:
+class Mhp():
+    type = "类属性"
+    def __init__(self):
+        self.name = "孟海平"
+        self.password = 123456
+        self.__method = "我是私有属性"
+
+    def public(self):
+        print("我是共有方法")
+
+    def __private(self):
+        print("我是私有方法")
+
+    @classmethod
+    def cl(cls):
+        print("我是类方法")
+        print("我有{}".format(cls.type))
+
+    @staticmethod
+    def static():
+        print("我是静态方法")
+
+    # def __str__(self):
+    #     print("我是实例对象")
+
+p = Mhp()
+print(p._Mhp__method)        #获取私有属性
+print(p._Mhp__private())           #获取私有方法
+print(p.static())           #通过实例对象调用静态方法
+print(p.cl())           #通过实例对象调用类方法
+print(Mhp.static())             #通过类对象调用静态方法
+print(Mhp.cl())            #通过类对象调用类方法
+
+私有属性 :  在属性名前加个__就是私有属性，self.__money            #私有属性可以让通过方法进行修改
+私有方法 : 在方法名面前加上__ 就是私有方法，def __eat()
+获取私有属性和私有方法:  对象名._类名__属性名               #print(p._Ppl.__money)
+
+
+os模块：
+os.name  ==> 获取操纵系统的名字 （windons是nt，非windows是posix）
+os.path.abspath("文件名")  ==> 获取文件名的路径位置
+os.path.isdir("内容")  ==> 判断是否是文件夹
+os.path.isfile("内容") ==> 判断是否是文件
+os.path.exists("内容")  ==>  判断是否存在
+os.path.splitext("文件名") ==>  将文件名通过.进行分成一个元组('文件名字','文件后缀')
+os.getcwd()    ==>  获取当前的工作路劲
+os.mkdir("文件名")    ==>   创建一个文件
+os.remove("文件名")    ==>    删除一个文件
+os.system("系统命令")
+
+randoom模块:
+random.randint(a,b)    #随机获取一个a到b-1的整数
+random.random(a,b)     #随机获取一个a到b的浮点数
+random.choice(['内容1','内容2',....])         #随机获取一个可迭代对象一个数据
+
+datetime模块:
+datetime.datetime.now()       #得到当前时间
+datatime.date(12,1,2)     #创建一个日期
+datetime.time(18,35,32)      #创建一个时间
+datetime.datetime.now + datetime.timedelta(3)          #获取当前时间3天后的时间
+
+time模块:
+time.time()         #获取从1970-01-01 00:00:00 到现在的时间
+print(time.strftime("%Y-%m-%d %H:%M:%S"))        #按照指定格式输出时间
+
+caledar模块
+print(calendar.calendar(2020))            #打印2020的日历
+print(calendar.isleap(2020))           #判断2020是否是闰年，是返回True,不是则返回Flase
+print(calendar.month(2020,3))            #打印2020的3有份的日期
+
+hashlib模块  
+md5()加密             #非对称加密
+x = hashlib.md5()
+x.update('加密内容'.encode('utf-8'))    #加密时需将加密的内容进行转换为二进制
+print(x.hexdigest())
+sha()加密              #非对称加密
+y = hashlib.sha1('加密内容'.encode('utf-8'))           #加密可替换sha224,sha256,sha384
+print(y.hexdigest())
+
+hmac模块   #对称加密，使用公钥跟密钥
+a = hmac.new('加密内容'.encode(),'加密的私钥'.encode())
+print(a.hexdigest())
+
+uuid模块
+uuid.uuid1()  #基于MAC地址，随机数生成唯一的uuid值。
+uuid.uuid3(uuid.NAMESPACE_DNS，name) 跟 uuid.uuid5(uuid.NAMESPACE_DNS，name)    #通过一定规则计算出固定值
+uuid.uuid4()  #通过伪随机数来生成uuid值，使用最多
+
+包的概念:
+一个py文件是一个模块，多个py文件放在一个文件夹里称为包，这个文件夹里有个__init__.py文件。
+
+python 字符串中   \ 表示转义字符
+路劲书写的三种方法:    1.  \\    2. r'\'     3. '/'
+在相对路劲中，./ 表示当前路劲   ../表示上一级目录      / 不能单用
+
+字符串前加r : 作用是除去转义字符
+字符串前加f : 作用是表示字符串内支持大括号内的python表达式
+字符串前加b：作用是表示这个是一个bytes对象
+Python bytes类型及用法 ：   http://c.biancheng.net/view/2175.html
+字符串前加u : 字符串内容以unicode格式进行编码，一般用在中文字符串前面，防止因为源码存储格式问题，导致再次使用的出现的乱码。
+在 Python3 中，bytes 和 str 的互相转换方式是
+str.encode('utf-8')     #加密成字节串
+bytes.decode('utf-8')   #解密成字符串
+
+文件操作模式
+r   文件读取，文件不存在会报错
+w   写入模式，打开文件后，如果文件不存在，会自动创建
+b   以二进制的方式打开文件，用来操作非文本文件
+如果以二进制方式来写入字符串内容 需要进行encode编码       file = open('xxx.txt','r')    file.write('啦啦啦啦啦啦'.encode('utf-8'))
+ rb   以二进制读取     wb   以二进制写入
+当open一个文件时出现 gbk格式错误，需要加encoding='utf-8'即可
+open('xxx.txt',encoding='utf-8')
+通过os.path.isfile(文件名)                   #进行判断文件是否存在
+通过os.path.splitext(xxx.txt)              #得到 ('xxx','.txt')   将文件名跟扩展名分开
+文件名.rpartition(‘.’) ==>    将文件名通过.进行分割，分成一个元组(文件名,'.','文件名后缀')
+
+django @login_request的使用
+from django.contrib.auth.models import AbstractUser      #在models中加载这个模块
+class 类名(AbstractUser)
+from django.contrib.auth.decorators import login_required       #视图中导入这个库
+LOGIN_URL = '/user/login/'                   #在setting中加入
+AUTH_USER_MODEL = 'user.User'           
+
+python -c 'import pty; pty.spawn("/bin/bash")'               #ptym模块.spawn 开启一个原生的终端
+
+python 单前下划线 _abc     #这是个私有属性
+       单后下划线 abc_         #为了与关键字相区分开
+       双前下划线  __abc      #进行名称修饰，为了防止父类变量在子类中被重写
+       双前导和双末尾下划线的名称，用于特殊用途。 这样的例子有，__init__对象构造函数，或__call__ --- 它使得一个对象可以被调用。
+       单下划线    _      # 有时作临时或无意义变量的名称，进行占位的使用，也表示python repl中最 接近一个表达式的结果
+       for _ in ragne(100):
+            print("内容打印100次")
+            
+map 函数的使用:  进行对提供的函数作定序列的映射   map(函数名,[参数值1，参数2,...]) map(lambda x: x**2,[参数1,参数2,...])     python3返回的是一个对象,需要list,dict进行格式化
+filter 函数的使用:   过滤掉不符合条件的元素，返回符合条件元素组成的新列表      filter(函数名,[参数1,参数2,....])         python3返回的是一个对象,需要list,dict进行格式化
+
+基类就是父类，派生类就是子类。
+
+求时间间隔天数
+import datetime
+
+begin = datetime.date(2020,1,1)               # datime.date()  可以指定年月日
+end = datetime.date(2020,12,31)
+data = (end-begin).days            #days 得到2020的所有天数
+print(data)
+
+urllib.parse.unquote('字符urlencdoe加密内容')               #对其内容进行解码，相当于js的urldecode().
+.pkl是python保存文件的一种文件格式，如果直接打开会显示一堆序列化的东西。
+
+zip函数将可迭代对象作为参数，将对象中对应的元素打包成一个个元组。，然后返回这些元组组成的列表。
+python3中返回是个对象，需要进行list转化为列表
+>>> a = [2,3,5,6]
+>>> b = [5,6,8,9]
+>>> aa = zip(a,b)
+>>> aa
+<zip object at 0x7f99a5b97c80>
+>>> print(aa)
+<zip object at 0x7f99a5b97c80>
+>>> print(list(aa))
+[(2, 5), (3, 6), (5, 8), (6, 9)]
+
+pyinstaller   #将py文件打包成exe可执行文件
+pyinstaller -F -w -i    ico图标位置   py位置                      # -F是打包文件 -w 是执行exe不弹出py的cmd话框，-i 指定 ico图标位置
+
+stringio和bytesio的使用:  https://blog.csdn.net/nbxuwentao/article/details/103280163
+Python 3 中字符串是str类型，内存读写字符串用StringIO。内存读写bytes 用BytesIO。bytes 和str 转换用encode 和decode
+from io import stringio
+stringio 在内存中进行读写str
+f = Bytesio()
+f.write('字符内容')
+Bytesio   在内存中读写bytes            ## 请注意，写入的不是str，而是经过UTF-8编码的bytes。和StringIO类似，可以用一个bytes初始化BytesIO，然后，像读文件一样读取：
+f = Bytesio()
+f.write('中文'.encode('utf-8'))
+getvalue()方法  用于获取写入后的str
+
+bytesio 网络图片跟视频的使用:  https://blog.csdn.net/Victor2code/article/details/105637945
+
+urllilb.request.urlretrieve的使用:   https://blog.csdn.net/pursuit_zhangyu/article/details/80556275
+from urllib.request import urlretrieve
+import os
+
+url = "http://www.moguproxy.com/proxy/validateCode/createCode"
+
+for i in range(1,300):
+    urlretrieve(url,os.getcwd()+r'\images'+ str(i)+'.png')
+    print("下载了 {} 张验证码".format(i))
+
+
+
+if (window.XMLHttpRequest) {
+	    // code for IE7+, Firefox, Chrome, Opera, Safari
+	    xmlhttp=new XMLHttpRequest();
+	  } else {
+	    // code for IE6, IE5
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)                  当返回状态为4是接受正常，200可以访问时，给某个标签添内容
+    {
+    document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+    }
+  }
+
+var userName = document.getElementById("userName").value;
+	var password = document.getElementById("password").value;
+	xmlhttp.open("GET", "/user/loginJudge?userName=" + userName + "&&password=" + password , true);
+	xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+	xmlhttp.send();
+	// ajax 教程：http://www.ziqiangxuetang.com/ajax/ajax-tutorial.html
+    
+    
+解决线程多竞争:    利用GIL(全局解释器锁)
+进程和线程和协程的关系:    进程里又线程，线程里有协程。
+
+进程是 并行     线程是并发

@@ -1,0 +1,264 @@
+css 知识点
+
+块级跟内联标签的区别: 
+1、块级元素：是块元素都从新行开始，相邻的块级元素将会在不同行显示。
+2、内联元素：一个挨着一个，都在同一行按从左至右的顺序显示，不单独占一行。
+常见的块级跟内联标签元素:  https://www.cnblogs.com/gassnake999/p/6884691.html
+想内联元素占行，可以用css中的display：block;
+想块元素不换行行，可以用css中的display：inline;
+取消 li 列表前面的小黑点 使用 list-style-type : none
+取消 a标签超链接的 默认下划线  text-decoration : none
+设置列表样式图片属性:   list-style-image : url (图片路径)
+
+设置导航栏悬浮下划线 ：
+padding-bottom : 10px
+border-bottom-style : solid
+border-bottom-color : blue
+border-bottom-with : 10px
+
+设置导航栏里div盒子中无序列表的内容与div顶部的距离  ： line-height 
+line-height 属性设置行间的距离（行高）。
+
+css *{margin:0 ;padding:0} 的重要性 ： 因为每个浏览器中对html标签的默认外边距和内边距的值不同，为了达到让主流浏览器设置出来的布局显示相同，则需要把html中所有标签的padding,margin都设置为0；
+
+特俗符号          含义               特俗字符代码
+                      空格符                  &nbsp;
+©                    版权                    &copy;
+®                    注册商标              &reg;
+<                     小于号                 &lt;
+>                     大于号                 &gt;
+&                     和号                    &amp;
+¥                      人民币                &yen;
+℃                     摄氏度                &deg;
+
+让多个div盒子进行并排同行显示  ：http://www.divcss5.com/wenji/w472.shtml   
+
+跳转锚点的实现:   
+<a href="#btn">          
+<h2 id="#btn">                                 #在超链接那里，href指向要跳转的标签的id值，就可以实现锚点的跳转
+
+css 字体间距 :  letter-spacing: xpx   
+css 字体开头缩进:   text-indent : xpx
+css 字体大小:  font-size : 大小px
+css 字体样式 :  font-family :  华文彩云 , 'Times New Roman' , SimSum                    (加载多个字体使用逗号分隔，当字体名字出现空格的时候使用引号引起来)
+ 
+css的内联样式跟内部样式:  
+内联是 在标签内的style属性种进行添加内容        <div style="内容"></div>
+内部是 在style标签内进行添加内容               <style>内容<style>
+外部是 通过link标签进行引入外部资源          <link rel="stylesheet" href="外部资源.css“>
+ 
+css 圆角设置 ：  border-radius : 3%
+
+实现网页视觉差效果 ： background-attachment : fixed           #相对于视觉窗口进行定位
+css 背景图片全屏自适应 : background-size : cover
+css 边框样式
+    border-style : 边框样式
+        solid : 实线
+        dashed :  虚线
+        dotted : 点线
+    border-width : 边框大小
+        px
+    border-color : 边框颜色
+        #fff red
+边框实现单边设置:   border-left-style : 中间是方向 left right top bottom
+css边框 双斜线  :  border : 4px double #ffff
+css 透明颜色:  transparent
+
+css 选择父元素下某个子元素 :  标签:nth-child(第一个元素) { 内容 }
+
+css样式的复合写法 : background: url("") no-repeat center center
+
+id 选择器 :   #id值
+class 选择器:  .class值            标签 .类名  
+通配选择器:  *{ }            这个选择器会给全局标签添加样式
+群组选择器 :  div,span,h1,p {}                     通过逗号进行分割，达到代码复用的效果
+层次选择器 :  div div:nth:child( 1)                      div的子级下div 寻找第n个div，父子级关系
+属性选择器 :  div[class="aa"]                       指定标签下的属性选择，= 完全匹配，*=部分匹配，^=起始匹配, $=结束匹配
+
+css 伪类选择器
+  M ：伪类 ()
+    : link              访问前的样式            (只能添加给a标签)
+    : visited          访问后的样式           (只能添加给a标签)
+    : hover           鼠标移入时的样式             (可以添加给所有标签)
+    : active           鼠标按下时的样式            (可以添加给所有标签)
+ 注 :
+   1. 当四个伪类都生效时，它的顺序:   L  V   H   A 
+   2. 一般网站只能这样去设置 :   a{}    a:hover{}
+
+   :after    : before                通过伪类的方式给元素添加一段内容，使用content属性
+   使用 : after 制作文字好看双下划线        
+        .d3 h1:after
+        {
+            content: '';
+            position: absolute;
+            border-bottom: 4px double #23D6E7;
+            width: 16%;
+            left: 41%;
+            bottom: -43%;
+        }
+    ：checked     : disabled        : force               都是给表单元素添加
+    :force  光标输入时改变
+
+css 渐变
+文字阴影 :  text-shadow : 10px 5px 5px gray;
+div盒子阴影 ： box-shadow : 10px 10px 5px gray;
+css 线性渐变 : linear-gradient
+background-image: linear-gradient(45deg,lightskyblue,palegreen,cyan);
+
+css 继承   ：    标签 {继承的属性 : inherit}
+单一样式的优先级  ： style行间 > id >  标签+类 > class > 标签  > 继承
+！important    提高样式优先级
+
+css 盒子模型
+        content(内容) -->   padding(内边距)   -->   border(边框)   -->   margin(外边距)
+
+        content :   有 height 和 width 组成。
+        padding :  (内边距 进行内填充)
+                10px  (一个值，上下左右)
+                10px 10px (上下 左右)
+                10px 10px 10px 10px (上 右 下 左)
+           padding-left
+           padding-right
+           padding-top
+           padding-bottom
+        margin :  (外边距 进行外扩展)
+                10px  (一个值，上下左右)
+                10px 10px (上下 左右)
+                10px 10px 10px 10px (上 右 下 左)
+           padding-left
+           padding-right
+           padding-top
+           padding-bottom
+
+    注：
+        1. content 里文字出现
+        2. background 背景色会填充到 border里的
+        3. padding 不能出现负数，而margin 可以出现
+
+    box-sizing :
+        默认值 : content-box : width 、height -> content     作用于盒子内部
+        border-box :  width 、height  -> content padding border     作用于全局
+    使用场景 :
+        1. 不用计算一些值
+        2. 解决了一些%的问题
+
+display 显示方式: 
+	1. block  以块方式进行显示
+	2. inline 以内联方式进行显示
+	3. inline-block 以内联的块形式显示
+	4. none  隐藏不显示，不占用空间
+
+min-height , max-height       最大与最小高度
+min-width , max-width         最大与最小宽度
+%单位，换算以父容器的大小进行换算的
+
+@media 进行多媒体查询
+@media {max-width}             为适应于多种媒体
+@media print  {max-width}          适应于打印机
+@media screen {max-width}        适应于电脑屏幕，平板，智能手机
+
+#在屏幕尺寸小于480像素的设备时进行修改背景色
+@media screen and (max-width: 480px) {
+    body {
+        background-color: lightgreen;
+    }
+
+css 过渡
+   transition-property  :   规定设置过度效果的css属性名称
+   transition-duration  :    规定完成过渡效果需要多少秒
+   transition-delay     :     定义过渡效果何时开始
+   transition-timing-functioin     :    规定速度效果的速度曲线
+
+css 字体渐变色实现 ：       https://blog.csdn.net/chenjingshen1214/article/details/87365923
+    background-image: linear-gradient(45deg,lightskyblue,palegreen,cyan);                      # 45deg角度，斜角，lightskyblue，palegreen,cyan 颜色
+    background-clip : content-box                             # 将背景色设置到内容框里
+    -webkit-background-clip : text                            # 作用于文本
+
+animation ： 动画名字 动画展示秒数 动画延迟时间  次数(infinite无限次)
+@keyframes 动画名字 
+{
+       0%{}   from{}
+       100%{}     to{}
+}
+
+css 取消textarea的默认边框跟选中时的蓝色边框
+     border : none;
+     outline : none;             (outline （轮廓）是绘制于元素周围的一条线，位于边框边缘的外围，可起到突出元素的作用。)
+     resize : none              (设置textarea不可被用户调整尺寸)
+
+textarea 只显示不可编辑
+     <textarea readonly="readonly">                    (readonly 为只读属性)
+
+css Sprinte  ( css 精灵 )          https://www.cnblogs.com/evenyao/p/9262371.html
+
+
+css  切图 ：https://lanhuapp.com/
+
+css 层叠 ：  z-index  :  10           (10为层叠属性值，越大越往前显示，只在定位 position ：absolute中使用)
+
+css定位实现 在某个div盒子里进行 定位移动
+    在某个div里 写 position : relative         相对定位
+    在这个盒子里 position : absolute          绝对定位
+
+
+
+
+javascript 知识点
+    js 轮播的实现  ： https://www.cnblogs.com/xiaoxb17/p/11960570.html
+    jqeruy 是 原生js封装的动画库
+    jquery 的引用 ：<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+选择器id的使用 ：
+    javascript   :       var myElement = document.getElementById("id01");              #选择id为di01的元素赋值给变量 myElemnt
+    jquery   ：    var  myElemnt  =  $("#id01");             #选择id为di01的元素赋值给变量 myElemnt
+选择器类名的使用  ：
+    javascript   ：   var myElements = document.getElementsByClassName("intro");        #选择类名为 intro的元素赋值给变量 myElements
+    jquery    ：    var  myElemnts = $(".intro")             #选择类名为 intro的元素赋值给变量 myElements
+选择器html标签的使用  ：
+    javascript    ：   var myElements =  document.getElementsByTagName("p")             #选择标签为p标签的内容赋值给变量myElemetns
+    jquery   ：   var myElemtns   =  $('p');                 #选择标签为p标签的内容赋值给变量myElemetns
+
+   js 图片转化 base64 ：
+        方法一 : 1.3001.4242https://blog.csdn.net/Aaroun/article/details/85093911?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-4.no_search_link&spm=1001.210
+        方法二 : https://www.jianshu.com/p/17d7e5ddf10a/
+        方法三 : https://www.cnblogs.com/chillaxyw/p/5783341.html
+   当图片是跨域的时候:   <img src="https://img.alicdn.com/bao/uploaded/TB1qimQIpXXXXXbXFXXSutbFXXX.jpg" alt="" crossorigin="*">            使用crossorgin = "*"  或者  响应头使用 响应头中就会附加上 Access-Control-Allow-Origin: * 字段
+
+   jquery 3d 轮播制作   : https://www.bilibili.com/video/BV1kZ4y1W7no?from=search&seid=1158686398342350802&spm_id_from=333.337.0.0
+
+
+
+
+
+   //记录轮播的次数
+         var count = 0;
+         //轮播的方向,默认向右
+         var isgo = 0;
+         //第一计时器对象
+         var timer;
+        //获取ul元素
+        var ul_img = document.getElementsByClassName("li-video")[0];
+         //获取所有li图片元素
+         var li_img = document.getElementsByTagName('video');
+        //第一部分，设置定时器
+         function showtime(){
+            timer = setInterval(function(){
+                if(isgo==false){ //isgo为false表示向右轮播
+                    count++;
+                    if(count>=li_img.length-1){ //如果轮播到右边界，往反方向轮播
+                         count = li_img.length-1;
+                         isgo=true;
+                     }
+                    //显示轮播到的当前图片，图片轮播的原理就是把图片排成一行，
+                     //然后准备一个只有一张图片大小的容器，对这个容器设置超出部分隐藏，
+                    //再控制定时器来让这些图片整体左移或右移，这样呈现出来的效果就是图片在轮播了
+                     ul_img.style.transform = "translate("+ -800*count +"px)";
+                 }else{ //isgo为true表示向左轮播
+                     if (count<=0) { //如果轮播到左边界，往反方向轮播
+                         count = 0;
+                         isgo=false;
+                     }//显示轮播到的当前图片
+                    ul_img.style.transform = "translate("+ -800*count +"px)";
+                 }
+             },4000);//每次延迟4秒钟
+         }
+         showtime();
