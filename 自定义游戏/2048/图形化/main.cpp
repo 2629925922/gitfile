@@ -61,12 +61,17 @@ enum color {
 
 };
 
+struct recodes {
+	int x;
+	int y;
+} recode[16];
+
 color Color[] = {c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, back};
 
 int num[] = {0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048};
 
 int map[MAX_GRID][MAX_GRID] = {0};
-int Recode[MAX_GRID][MAX_GRID];
+
 int randx, randy;
 
 POINT pxy[MAX_GRID][MAX_GRID];
@@ -80,6 +85,13 @@ int main() {
 	while (1) {
 		initDraw();
 		Draw();
+		for (int i = 0; i < MAX_GRID; i++) {
+			for (int j = 0; j < MAX_GRID; j++) {
+				printf("%3d", map[i][j]);
+				if (j == 3)
+					printf("\n");
+			}
+		}
 		if (!kbhit()) {
 			char input = getch();
 			switch (input) {
@@ -117,27 +129,43 @@ void Draw() {
 	for (int i = 0; i < MAX_GRID; i++) {
 		for (int j = 0; j < MAX_GRID; j++) {
 			for (int q = 0; q < 12; q++) {
-				if (map[i][j] = num[q]) {
+				if (map[i][j] == num[q]) {
 					setfillcolor(Color[q]);
 					bar(pxy[i][j].x, pxy[i][j].y, pxy[i][j].x + GRID, pxy[i][j].y + GRID);
 				}
 			}
 			if (map[i][j] != 0) {
+				setfont(60, 0, "ËÎÌו");
 				itoa(map[i][j], s, 10);
-				outtextxy(pxy[i][j].x, pxy[i][j].y, s);
+				setbkmode(TRANSPARENT);
+				int tempx = GRID / 2 - textwidth(s) / 2;
+				int tempy = GRID / 2 - textheight(s) / 2;
+				outtextxy(pxy[i][j].x + tempx, pxy[i][j].y + tempy, s);
 			}
 		}
 	}
 }
 
 void Generate() {
+	int ii = 0;
+	int jj = 1;
 	for (int i; i < MAX_GRID; i++) {
 		for (int j = 0; j < MAX_GRID; j++) {
 			if (map[i][j] == 0) {
-				Recode[i][j] = map[i][j];
+				recode[ii++] = {i, j};
 			}
 		}
 	}
+//	while (jj) {
+//		randx = Random;
+//		randy = Random;
+//		for (int i = 0; i < 16; i++) {
+//			if (recode[i].x == randx && recode[i].y == randy) {
+//				jj = 0;
+//				break;
+//			}
+//		}
+//	}
 	randx = Random;
 	randy = Random;
 	map[randx][randy] = 2;
@@ -145,15 +173,16 @@ void Generate() {
 
 void up() {
 	for (int i = 0; i < MAX_GRID; i++) {
-		for (int j = 1, h = 0; j >= 0; j++) {
+		for (int j = 1, h = 0; j < MAX_GRID; ++j) {
 			if (map[j][i] > 0) {
 				if (map[j][i] == map[h][i]) {
-					map[h][i] *= 2;
+					map[h++][i] *= 2;
 					map[j][i] = 0;
 				} else if (map[h][i] == 0) {
 					map[h][i] = map[j][i];
 					map[j][i] = 0;
-					h += 1;
+				} else {
+					map[++h][i] = map[j][i];
 				}
 			}
 		}
