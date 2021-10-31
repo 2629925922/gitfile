@@ -1,7 +1,6 @@
 /*********************************************************************
 Use EGE (Easy Graphic Engeer, https://xege.org/ ) graphic library to
 draw random lines on screen.
-
 Need to add some parameters to compiling options. Please click menu
 "Options > Compiler Options", in the textbox under "Add the following
 commands when calling the linker:", do as following:
@@ -9,10 +8,8 @@ commands when calling the linker:", do as following:
   -lgraphics64 -luuid -lmsimg32 -lgdi32 -limm32 -lole32 -loleaut32
 (b) if the current compiler set contains "32-bit", add:
   -lgraphics -luuid -lmsimg32 -lgdi32 -limm32 -lole32 -loleaut32
-
 (These parameters are only for programs using EGE graphic library.
 Please delete them for other programs which donot use EGE.)
-
 说明：本程序中使用了 EGE 图形函数库（https://xege.org/）进行绘图，运行时
 会在屏幕上连续绘制随机线条，直到用户按任意键结束。
 需要在编译选项中加入一些连接参数才能成功编译。操作如下：点击Dev-C++
@@ -85,13 +82,13 @@ int main() {
 	while (1) {
 		initDraw();
 		Draw();
-		for (int i = 0; i < MAX_GRID; i++) {
-			for (int j = 0; j < MAX_GRID; j++) {
-				printf("%3d", map[i][j]);
-				if (j == 3)
-					printf("\n");
-			}
-		}
+//		for (int i = 0; i < MAX_GRID; i++) {
+//			for (int j = 0; j < MAX_GRID; j++) {
+//				printf("%3d", map[i][j]);
+//				if (j == 3)
+//					printf("\n");
+//			}
+//		}
 		if (!kbhit()) {
 			char input = getch();
 			switch (input) {
@@ -191,13 +188,57 @@ void up() {
 
 
 void down() {
-	int i = 1;
+	for (int i = 0; i < MAX_GRID; i++) {
+		for (int j = 2, h = 3; j >= 0; --j) {
+			if (map[j][i] > 0) {
+				if (map[j][i] == map[h][i]) {
+					map[h--][i] *= 2;
+					map[j][i] = 0;
+				} else if (map[h][i] == 0) {
+					map[h][i] = map[j][i];
+					map[j][i] = 0;
+				} else {
+					map[--h][i] = map[j][i];
+				}
+			}
+		}
+	}
 }
 
+
+
 void left() {
-	int i = 1;
+	for (int i = 0; i < MAX_GRID; i++) {
+		for (int j = 1, h = 0; j < MAX_GRID; j++) {
+			if (map[i][j] > 0) {
+				if (map[i][j] == map[i][h]) {
+					map[i][h++] *= 2;
+					map[i][j] = 0;
+				} else if (map[i][h] == 0) {
+					map[i][h] = map[i][j];
+					map[i][j] = 0;
+				} else {
+					map[i][++h] = map[i][j];
+				}
+			}
+		}
+	}
 }
 
 void right() {
-	int i = 1;
+	for (int i = 0; i < MAX_GRID; i++) {
+		for (int j = 2, h = 3; j >= 0; --j) {
+			if (map[i][j]  > 0) {
+				if (map[i][j] == map[i][h]) {
+					map[i][h--] *= 2;
+					map[i][j] = 0;
+				} else if (map[i][h] == 0) {
+					map[i][h] = map[i][j];
+					map[i][j] = 0;
+				} else {
+					map[i][--h] = map[i][j];
+				}
+			}
+		}
+	}
 }
