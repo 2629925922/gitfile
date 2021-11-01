@@ -25,11 +25,13 @@ Please delete them for other programs which donot use EGE.)
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <stdbool.h>
+#include <ctype.h>
 #include <graphics.h>	//EGE graphic library
 #define MAX_GRID 4
 #define GRID 125
 #define k 20
-#define Random rand() % 4
+#define Random(x) rand() % x
 using namespace std;
 
 void Generate();
@@ -39,6 +41,8 @@ void up();
 void down();
 void left();
 void right();
+bool is_win();
+void over();
 
 
 enum color {
@@ -61,7 +65,14 @@ enum color {
 struct recodes {
 	int x;
 	int y;
-} recode[16];
+
+
+
+
+
+
+
+} recode[16] = {0};
 
 color Color[] = {c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, back};
 
@@ -71,26 +82,27 @@ int map[MAX_GRID][MAX_GRID] = {0};
 
 int randx, randy;
 
+int score = 0;
+
 POINT pxy[MAX_GRID][MAX_GRID];
+
+const int width = k * 5 + GRID * MAX_GRID, height =  k * 5 + GRID * MAX_GRID;
 
 
 int main() {
-	const int width = k * 5 + GRID * MAX_GRID, height =  k * 5 + GRID * MAX_GRID;
+	int iii = true;
 	initgraph(width, height);
+	setcaption("2048");
 	setbkcolor(back);
 	cleardevice();
-	while (1) {
+	while (iii) {
 		initDraw();
 		Draw();
-//		for (int i = 0; i < MAX_GRID; i++) {
-//			for (int j = 0; j < MAX_GRID; j++) {
-//				printf("%3d", map[i][j]);
-//				if (j == 3)
-//					printf("\n");
-//			}
-//		}
 		if (!kbhit()) {
 			char input = getch();
+			if (isalpha(input)) {
+
+			}
 			switch (input) {
 				case 'w':
 					up();
@@ -106,7 +118,9 @@ int main() {
 					break;
 			}
 		}
+		iii = is_win();
 	}
+	over();
 	return 0;
 }
 
@@ -144,27 +158,18 @@ void Draw() {
 }
 
 void Generate() {
-	int ii = 0;
-	int jj = 1;
-	for (int i; i < MAX_GRID; i++) {
+	int ii = 0, jj = 1, value;
+	struct recodes recode[16] = {0};
+	for (int i = 0; i < MAX_GRID; i++) {
 		for (int j = 0; j < MAX_GRID; j++) {
 			if (map[i][j] == 0) {
 				recode[ii++] = {i, j};
 			}
 		}
 	}
-//	while (jj) {
-//		randx = Random;
-//		randy = Random;
-//		for (int i = 0; i < 16; i++) {
-//			if (recode[i].x == randx && recode[i].y == randy) {
-//				jj = 0;
-//				break;
-//			}
-//		}
-//	}
-	randx = Random;
-	randy = Random;
+	value = Random(ii);
+	randx = recode[value].x;
+	randy = recode[value].y;
 	map[randx][randy] = 2;
 }
 
@@ -173,13 +178,16 @@ void up() {
 		for (int j = 1, h = 0; j < MAX_GRID; ++j) {
 			if (map[j][i] > 0) {
 				if (map[j][i] == map[h][i]) {
-					map[h++][i] *= 2;
+					score += map[h++][i] *= 2;
 					map[j][i] = 0;
 				} else if (map[h][i] == 0) {
 					map[h][i] = map[j][i];
 					map[j][i] = 0;
 				} else {
 					map[++h][i] = map[j][i];
+					if (j != h) {
+						map[i][j] = 0;
+					}
 				}
 			}
 		}
@@ -192,13 +200,16 @@ void down() {
 		for (int j = 2, h = 3; j >= 0; --j) {
 			if (map[j][i] > 0) {
 				if (map[j][i] == map[h][i]) {
-					map[h--][i] *= 2;
+					score += map[h--][i] *= 2;
 					map[j][i] = 0;
 				} else if (map[h][i] == 0) {
 					map[h][i] = map[j][i];
 					map[j][i] = 0;
 				} else {
 					map[--h][i] = map[j][i];
+					if (j != h) {
+						map[i][j] = 0;
+					}
 				}
 			}
 		}
@@ -212,13 +223,16 @@ void left() {
 		for (int j = 1, h = 0; j < MAX_GRID; j++) {
 			if (map[i][j] > 0) {
 				if (map[i][j] == map[i][h]) {
-					map[i][h++] *= 2;
+					score += map[i][h++] *= 2;
 					map[i][j] = 0;
 				} else if (map[i][h] == 0) {
 					map[i][h] = map[i][j];
 					map[i][j] = 0;
 				} else {
 					map[i][++h] = map[i][j];
+					if (j != h) {
+						map[i][j] = 0;
+					}
 				}
 			}
 		}
@@ -230,15 +244,43 @@ void right() {
 		for (int j = 2, h = 3; j >= 0; --j) {
 			if (map[i][j]  > 0) {
 				if (map[i][j] == map[i][h]) {
-					map[i][h--] *= 2;
+					score += map[i][h--] *= 2;
 					map[i][j] = 0;
 				} else if (map[i][h] == 0) {
 					map[i][h] = map[i][j];
 					map[i][j] = 0;
 				} else {
 					map[i][--h] = map[i][j];
+					if (j != h) {
+						map[i][j] = 0;
+					}
 				}
 			}
 		}
 	}
+}
+
+bool is_win() {
+	for (int i = 0; i < MAX_GRID; i++) {
+		for (int j = 0; j < MAX_GRID; j++) {
+			if (j + 1 != 4) {
+				if (map[i][j] == map[i][j + 1] && map[j][i] == map[j + 1][i]) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+void over() {
+	char scores[1000];
+	char scoress[1000] = "·Ö";
+	clearviewport();
+	setfillcolor(WHITE);
+	setfont(10, 0, "ºÚÌå");
+	itoa(score, scores, 10);
+	strcat(scores, scoress);
+	outtextxy(width / 3.5, height / 4, scores);
+	getch();
 }
