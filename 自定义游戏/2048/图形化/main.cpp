@@ -43,6 +43,8 @@ void left();
 void right();
 bool is_win();
 void over();
+void gmouse();
+void init();
 
 
 enum color {
@@ -70,19 +72,17 @@ struct recodes {
 
 
 
-
-
 } recode[16] = {0};
 
 color Color[] = {c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, back};
 
 int num[] = {0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048};
 
-int map[MAX_GRID][MAX_GRID] = {0};
+int map[MAX_GRID][MAX_GRID];
 
 int randx, randy;
 
-int score = 0;
+int score;
 
 POINT pxy[MAX_GRID][MAX_GRID];
 
@@ -94,7 +94,8 @@ int main() {
 	initgraph(width, height);
 	setcaption("2048");
 	setbkcolor(back);
-	cleardevice();
+	init();
+//	cleardevice();
 	while (iii) {
 		initDraw();
 		Draw();
@@ -124,6 +125,11 @@ int main() {
 	return 0;
 }
 
+void init() {
+	map[MAX_GRID][MAX_GRID] = {0};
+	struct recodes recode[16] = {0};
+	score = 0;
+}
 
 void initDraw() {
 	for (int i = 0; i < MAX_GRID; i++) {
@@ -273,14 +279,33 @@ bool is_win() {
 	return false;
 }
 
+void gmouse() {
+	mouse_msg msg = {0};
+	for (; is_run; delay_fps(60)) {
+		while (mousemsg()) {
+			msg = getmouse();
+		}
+		if (msg.x >= width / 2.5 && msg.x <= width / 2.5 + 20 || msg.y >= height / 2 && msg.y <= height / 2 + 20) {
+			main();
+		}
+	}
+}
+
 void over() {
 	char scores[1000];
-	char scoress[1000] = "分";
+	char scoress[100] = "分";
+	PIMAGE ping = newimage();
 	clearviewport();
+	setbkcolor(back);
 	setfillcolor(WHITE);
-	setfont(10, 0, "黑体");
+	setfont(80, 0, "黑体");
 	itoa(score, scores, 10);
 	strcat(scores, scoress);
-	outtextxy(width / 3.5, height / 4, scores);
-	getch();
+	outtextxy(width / 5, height / 4, "得分:");
+	outtextxy(width / 1.8, height / 4, scores);
+	getimage(ping, "C:\\Users\\Think\\Desktop\\game\\自定义游戏\\2048\\图形化\\icon.jpg");
+	putimage(width / 2.5, height / 2, ping);
+	gmouse();
+	delimage(ping);
 }
+
