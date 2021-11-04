@@ -72,6 +72,14 @@ struct recodes {
 
 
 
+
+
+
+
+
+
+
+
 } recode[16] = {0};
 
 color Color[] = {c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, back};
@@ -84,6 +92,8 @@ int randx, randy;
 
 int score;
 
+int key;
+
 POINT pxy[MAX_GRID][MAX_GRID];
 
 const int width = k * 5 + GRID * MAX_GRID, height =  k * 5 + GRID * MAX_GRID;
@@ -94,16 +104,11 @@ int main() {
 	initgraph(width, height);
 	setcaption("2048");
 	setbkcolor(back);
-	init();
-//	cleardevice();
 	while (iii) {
 		initDraw();
 		Draw();
 		if (!kbhit()) {
 			char input = getch();
-			if (isalpha(input)) {
-
-			}
 			switch (input) {
 				case 'w':
 					up();
@@ -126,7 +131,7 @@ int main() {
 }
 
 void init() {
-	map[MAX_GRID][MAX_GRID] = {0};
+	int map[MAX_GRID][MAX_GRID] = {0};
 	struct recodes recode[16] = {0};
 	score = 0;
 }
@@ -142,6 +147,12 @@ void initDraw() {
 
 void Draw() {
 	Generate();
+	cout << key << endl;
+	for (int i = 0; i < MAX_GRID; i++) {
+		for (int j = 0; j < MAX_GRID; j++) {
+			printf("%3d", map[i][j]);
+		}
+	}
 	char s[10];
 	for (int i = 0; i < MAX_GRID; i++) {
 		for (int j = 0; j < MAX_GRID; j++) {
@@ -161,10 +172,19 @@ void Draw() {
 			}
 		}
 	}
+
 }
 
 void Generate() {
 	int ii = 0, jj = 1, value;
+	if (key == 1) {
+		for (int i = 0; i < MAX_GRID; i++) {
+			for (int j = 0; j < MAX_GRID; j++) {
+				map[i][j] = 0;
+			}
+		}
+		score = 0;
+	}
 	struct recodes recode[16] = {0};
 	for (int i = 0; i < MAX_GRID; i++) {
 		for (int j = 0; j < MAX_GRID; j++) {
@@ -286,7 +306,11 @@ void gmouse() {
 			msg = getmouse();
 		}
 		if (msg.x >= width / 2.5 && msg.x <= width / 2.5 + 20 || msg.y >= height / 2 && msg.y <= height / 2 + 20) {
-			main();
+			if (msg.is_left()) {
+				key = 1;
+				main();
+			}
+
 		}
 	}
 }
@@ -295,6 +319,7 @@ void over() {
 	char scores[1000];
 	char scoress[100] = "·Ö";
 	PIMAGE ping = newimage();
+	cleardevice();
 	clearviewport();
 	setbkcolor(back);
 	setfillcolor(WHITE);
