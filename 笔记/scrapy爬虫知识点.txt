@@ -1,0 +1,117 @@
+scrapy使用： https://www.jianshu.com/p/cecb29c04cd2
+xpath使用 ：https://www.cnblogs.com/yinjiangchong/p/9440014.html
+scrapy 实例 ：https://www.cnblogs.com/tinghai8/p/9700300.html
+js反爬虫 debugger调式 ：http://www.dreamwu.com/post-6537.html
+无限debugger 破解方法  ：https://blog.csdn.net/weixin_45926804/article/details/105197093
+scrapy 切换user-agent使用 ：https://www.jianshu.com/p/7911f90ec693
+scrapy 代理ip的使用   :  https://www.cnblogs.com/lxbmaomao/p/10363390.html
+
+小常识 ：
+scrapy startproject 项目名称
+
+在spiders目录中 scrapy genspeder 项目名称 "需爬取的网址"
+
+spiders中的项目名称.py 是爬虫文件
+class TpSpider(scrapy.Spider):
+    name = 'tp'                                              #这是项目名称
+    allowed_domains = ['pic.netbian.com/']
+    start_urls = ['https://pic.netbian.com/4kmeinv/']               #需要爬取的url列表
+
+    def parse(self, response):
+        data = BzItem()                                                     #这是items.py爬取字段
+        context  = response.xpath('/html/body/div[2]/div/div[3]/ul')
+        for i in context:                                                       #extract()将xpath对象转化为unicode字符串
+            data['url'] = i.xpath('./li/a/img/@src').extract()
+            data['name'] = i.xpath('./li/a/b/text()').extract()
+            yield data                                                          #yield 是生成器关键字
+yield 最后返回的数据返送给piplines管道文件中
+
+包含yield的就是生成器
+生成器的作用: https://www.jianshu.com/p/a1a65c46002b            #依次循环打印并存储
+
+项目目录中piplines是管道文件
+con = sqlite3.connect(r'C:\Users\Think\Desktop\文件\制梦空间 django项目\制梦空间\dreamspaces' + os.sep + "db.sqlite3")
+
+class BzPipeline(object):
+    def __init__(self):
+        self.con = con
+        self.cur = con.cursor()
+        self.id = 0
+    def process_item(self, item, spider):
+        for i in range(len(item['name'])):
+            url =  "/static/images/TP/mn/" + str(item['url'][i][-13:])
+            self.cur.execute("INSERT INTO bz_tk VALUES(?,?,?)",(i+101,str(item['name'][i]),str(url)))
+        self.con.commit()
+        number = len(item['name'])
+        u = r"C:\Users\Think\Desktop\文件\制梦空间 django项目\制梦空间\dreamspaces\static\images\TP\mn"
+        for i in range(number):
+            urlretrieve('https://pic.netbian.com' + item['url'][i], os.path.join(u + os.sep + str(item['url'][i][-13:]) + ".jpg"))
+            time.sleep(3)
+            print("下载了第" + str(i) + "张了")
+        return item                                           #这里是告诉item执行完毕，重新获取
+
+    def __del__(self):                           # __del__ 是python对象消失时自动调用
+        self.cur.close()
+        self.con.close()
+
+简便数据存储文件
+scrapy crawl 项目名称 -o  文件.json
+scrapy crawl 项目名称 -o  文件.csv
+scrapy crawl 项目名称 -o  文件.txt
+scrapy crawl 项目名称 -o  文件.xml
+
+scrapy 回调进行多页面爬取
+class TpSpider(scrapy.Spider):
+    name = 'tp'
+    allowed_domains = ['pic.netbian.com/']
+    offset = 1
+    start_urls = ["https://pic.netbian.com/4kfengjing/"]
+    def parse(self, response):
+        data = BzItem()
+        context  = response.xpath('/html/body/div[2]/div/div[3]/ul')
+        for i in context:
+            data['url'] = i.xpath('./li/a/img/@src').extract()
+            data['name'] = i.xpath('./li/a/b/text()').extract()
+            yield data
+        if self.offset < 5:
+            self.offset += 1
+            baseurl = "https://pic.netbian.com/4kfengjing/index_" + str(self.offset) + ".html"
+            yield scrapy.Request(baseurl,callback=self.parse,dont_filter=True)                         # 利用scrapy.Request方法，第一个参数是url，callback是回调访问函数，dont_filter是不启用查重过滤
+
+请注意，在Request（）中，我们必须添加dont_filter=True因为我们多次请求的是同一个网址，scrapy默认会把重复的网址过滤掉。运行这个项目，我们可以看到如下的输出。
+settings是配置文件
+
+DOWNLOAD_DELAY = 3                 #设置爬取延迟
+
+ITEM_PIPELINES = {                  #这是管道
+   'bz.pipelines.BzPipeline': 300,
+   # 'bz.pipelines.BzimagePiplines' : 300,
+}
+
+
+
+使用代理ip进行爬取 ：
+在settings配置文件中写入
+PROXIES = ['http://183.207.95.27:80', 'http://111.6.100.99:80', 'http://122.72.99.103:80',
+           'http://106.46.132.2:80', 'http://112.16.4.99:81', 'http://123.58.166.113:9000',
+           'http://118.178.124.33:3128', 'http://116.62.11.138:3128', 'http://121.42.176.133:3128']             #ip地址池
+    DOWNLOADER_MIDDLEWARES = {
+        'myproject.middlewares.ProxyMiddleware': 543,
+    }
+然后再在middlewares中间件中写入
+import scrapy
+from scrapy import signals
+import random
+
+class ProxyMiddleware(object):
+
+    def __init__(self, ip):
+        self.ip = ip
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(ip=crawler.settings.get('PROXIES'))
+
+    def process_request(self, request, spider):
+        ip = random.choice(self.ip)
+        request.meta['proxy'] = ip
