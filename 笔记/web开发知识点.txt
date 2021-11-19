@@ -1,3 +1,8 @@
+html 知识点
+video 去除底部播放条跟全屏按钮  :  <video src="123.mp4" autoplay muted loop></video>          #controls 是基本显示    autoplay 自动播放    muted 是静音播放      loop循环播放
+
+a标签超链接实现submit提交功能  ： <a onclick='document.getElementById("myform").submit()'><i class="icon"></i></a>
+
 css 知识点
 
 块级跟内联标签的区别: 
@@ -47,7 +52,7 @@ css的内联样式跟内部样式:
 内部是 在style标签内进行添加内容               <style>内容<style>
 外部是 通过link标签进行引入外部资源          <link rel="stylesheet" href="外部资源.css“>
  
-css 圆角设置 ：  border-radius : 3%
+css 圆角设置 ：  border-radius : 0.33em
 
 实现网页视觉差效果 ： background-attachment : fixed           #相对于视觉窗口进行定位
 css 背景图片全屏自适应 : background-size : cover
@@ -200,10 +205,120 @@ css定位实现 在某个div盒子里进行 定位移动
     在某个div里 写 position : relative         相对定位
     在这个盒子里 position : absolute          绝对定位
 
+css flex布局 ：https://www.jianshu.com/p/d9373a86b748/
+
+利用i标签 制作 icon小图标显示
+<i class="icon"></i>
+css 代码 ：
+     position: absolute;
+     margin-top: 1%;
+     margin-left: 68%;
+     display: inline-block;
+     width: 30px;
+     height: 28px;
+     background-image:url("/static/images/TP/icon_search_1_black.svg");
+     background-repeat: no-repeat;
 
 
 
 javascript 知识点
+    js 反调试 ：https://blog.csdn.net/tianluling2012/article/details/94594746
+    console.log()               #在f12中打印调式值
+    confirm()                 #确定取消框      同步等待
+    prompt()                     #输入值确定框          同步等待
+    document.wirte()         #在body里写入值 也可以写入标签
+    documnet.body.innerHTML()                 #在body里替换标签内容
+
+    js的数据类型 ：值类型(基本类型)：字符串（String）、数字(Number)、布尔(Boolean)、对空（Null）、未定义（Undefined）、Symbol。
+                  引用数据类型：对象(Object)、数组(Array)、函数(Function)
+
+    js 数组写法 : var cars = ["内容1","内容2"]
+
+    js 函数 ： function 函数名(参数1，参数2，...){ 执行命令 }                      #function 定义函数的关键字
+    带返回值的函数 :  function 函数名(){ 执行命令;return 0 }       通过使用 return 语句就可以实现。在使用 return 语句时，函数会停止执行，并返回指定的值。
+
+    js 事件 :
+        事件	描述
+        onchange	HTML 元素改变
+        onclick	用户点击 HTML 元素
+        onmouseover	用户在一个HTML元素上移动鼠标
+        onmouseout	用户从一个HTML元素上移开鼠标
+        onkeydown	用户按下键盘按键
+        onload	浏览器已完成页面的加载
+        oncontextmenu   用户鼠标右键点击事件
+
+    window.location.replace("https://www.runoob.com")                       #载入新文档替换当前页
+
+    js 转义的特殊字符 ：
+        代码	输出
+        \'	单引号
+        \"	双引号
+        \\	反斜杠
+        \n	换行
+        \r	回车
+        \t	tab(制表符)
+        \b	退格符
+        \f	换页符
+
+    js 对象 :
+    var object = {name = "mhp",password = 123465}
+    修改值 :   object.name = "zll"         #. 写法是确定值
+               object["name"] = "zll"      var a="name"        object[a] = "zll"      # 括号是可以传入变量
+    变量存放在栈中，而object对象是变量名在栈中，其中的内容值存放在堆中。（对象栈中存放堆中内容的地址，堆中存放其数据）
+
+    setinterval 定时器 ： setinterval(执行的函数，时间)               时间以毫秒为单位 : 1000毫秒为1秒
+
+    a = [1,2,3,4,5,6]
+    数组.length      #求出数组的长度
+    修改数组的长度可以实现 数组内容的截取
+    a.length = 3               #得到 a = [1,2,3]
+
+    垃圾回收机制 ： 将引用堆中地址的对象设置为null，并将所有引用改地址的对象设置为null。当内存在适当的时候清理栈中的孤儿对象
+
+    网页中所有载入html文档中的内容都是document对象
+    document.url               #返回当前文档的url
+    document.title              #返回当前文档的标题
+    document.cookie            #返回当前文档的cookie
+    document.domain             #返回当前文档的域名
+    document.事件名称        #当文档完全载入后立即执行事件内容
+
+    js 实现验证码 ：https://www.jb51.net/article/151432.htm
+
+
+
+
+    js 实现网页禁止右键 ：
+     document.oncontextmenu = function () {                                  #oncontextmenu 是鼠标右键触发上下文事件
+        alert("当前页面禁止右键!!");
+        return false;
+     };
+
+    js无限debuuger实现 ：https://www.cnblogs.com/Qooo/p/15149832.html
+
+    js 匿名函数的使用: https://www.cnblogs.com/chenxianbin89/archive/2010/01/28/1658392.html
+    他们都是函数，但是他们都有一个特点——没有名字。所以我们把他们称作“匿名函数”。然而，正因为他们没有“名字”，我们也没有办法找到他们。这就引申了如何去调用一个匿名函数的问题了。
+    var abc=function(x,y){
+      return x+y;
+    }
+    alert(abc(2,3)); // "5"
+    实例一: alert(function(x,y){x+y}(2,3))          #返回5
+    大家知道小括号的作用吗？小括号能把我们的表达式组合分块，并且每一块，也就是每一对小括号，都有一个返回值。这个返回值实际上也就是小括号中表达式的返回值。所以，当我们用一对小括号把匿名函数括起来的时候，实际上小括号对返回的，就是一个匿名函数的Function对象。因此，小括号对加上匿名函数就如同有名字的函数般被我们取得它的引用位置了。所以如果在这个引用变量后面再加上参数列表，就会实现普通函数的调用形式。
+    
+
+    js 定时器 匿名函数实现无限debugger ：
+        function test(x,y){
+            z=x+y;
+            return z;
+        }
+        setInterval(function()
+        {test+""=="function test(x,y){z=x+y;return z;}" ? console.log("未修改")
+        :setInterval(
+        function(){
+            debugger;
+            },1000);}
+            ,1000);
+        test(100,200);
+
     js 轮播的实现  ： https://www.cnblogs.com/xiaoxb17/p/11960570.html
     jqeruy 是 原生js封装的动画库
     jquery 的引用 ：<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
@@ -225,7 +340,7 @@ javascript 知识点
 
    jquery 3d 轮播制作   : https://www.bilibili.com/video/BV1kZ4y1W7no?from=search&seid=1158686398342350802&spm_id_from=333.337.0.0
 
-
+   jquery antmate动画  :  在一定时间内进行改变值
 
 
 
