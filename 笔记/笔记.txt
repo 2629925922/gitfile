@@ -1,0 +1,531 @@
+
+当出现编码gbk的不可映射字符的解决方法: 这是因为代码中出现了中文,将编码格式改为ANSI格式即可。
+
+
+定义变量注意事项:
+	1.未初始化不可使用
+	2.float定义值时后面必须要加F，long定义值时后面必须要加L。
+
+数据类型中布尔值定义:    boollean a = True/FALSE;
+数据类型中字符串定义:    String s = "字符串内容";                 //这里采用string构造方法进行直接创建字符串对象
+
+强制类型转换注意事项:
+	只能是将大类型的值或变量强制转化为小类型的值或变量
+
+
+字符/字符串 + 加操作注意事项:
+	1.字符 + int型   是以对应的ascii码进行相加
+	2.字符串 + 任意类型时 是以拼接的形式进行连接运算。当出现多个 + 操作时，按照从左到右的顺序进行执行。
+
+数据流输入：
+	1. 先导入Scanner包  import java.util.Scanner
+	2. 创建对象: Scanner sc = new Scanner(System.in)
+	3. 调用输入方法: nextInt() 输入整数  next() 输入字符串   nextDouble() 输入double类型数据
+	例句:
+		Scanner sc = new Scanner(System.in);
+		System.out.println("输入第一身高: ");
+		int h1 = sc.nextInt();
+		System.out.println("输入第二身高: ");
+		int h2 = sc.nextInt();
+		System.out.println("输入第三身高: ");
+		int h3 = sc.nextInt();
+		int max = h1>h2?h1:h2;
+		max = max>h3?max:h3;
+		System.out.println("最高身高是：" + max);
+		sc.close();
+
+数据流输出:
+	System.out.print(msg)      //输出一个字符串，不带换行
+	System.out.println(msg)         //输出一个字符串，带换行
+	System.out.printf("%s",msg)        //格式化数据流输出一个字符串
+
+
+if结构:
+	if(表达式) else if  else;
+
+switch结构:
+	switch(表达式){case 值:表达式; case 值:表达式:......}
+
+for循环结构:
+	for(初始化;表达式;更新){}
+
+Java 增强的for循环:
+	for(声明语句:表达式){代码句子}
+	例句:
+	int numbers[] = {123,789,6565,4564};
+	for(int x:numbers)             //x是循环个体，numbers循环体。
+	{
+		System.out.println(x);
+	}
+
+while循环结构:
+	while(表达式);
+
+do while结构:
+	do{}while(表达式);
+
+
+随机数:
+	1.导入Random包    import java.util.Random
+	2.创建对象     Random r = new Random();
+	3.int number = r.nextInt(10)      获取数据的范围: [0,10) 包括0,但是不包括10。
+	例句:
+		String s = "随机值是";
+		Random r = new Random();
+		int number = r.nextInt(50);
+		System.out.print(s);
+		System.out.println(number);
+
+
+数组:
+	int arr[] = new int[3];
+	左边:
+		int: 说明数组的元素是int类型
+		[]: 说明这是一个数组
+		arr: 这是数组的名称
+	右边:
+		new: 为数组申请内存空间
+		int: 说明数组中的元素是int类型
+		[]: 说明这个是数组
+		3: 数组长度，其实就是数组中的元素的个数
+
+	动态初始化: 数据类型 数组名称[] = new 数据类型[数据长度]
+	例句:
+		char ch[] = new char[5];
+		ch[0] = 'a';
+		ch[1] = 'b';
+		ch[2] = 'c';
+
+	动态初始化时，系统会为数组设置默认值:
+		1. 整数型: 默认值0
+		2. 浮点型: 默认值0.0
+		3. 布尔值: 默认值是false
+		4. 字符: 默认值是空字符
+		5. 引用数据类型: 默认值是null
+
+	静态初始化: 数据类型 数组名称[] = {元素一，元素二，元素三......}
+	例句:
+		char ch[] = {'a','b','c'};
+
+	多数组指向同一个内存空间:
+		int arr[] = new int[3];
+		arr[0] = 100;
+		arr[1] = 200;
+		arr[2] = 300;
+		System.out.println(arr[0]);               // 100
+		int arr1[] = arr;
+		arr1[0] = 2000;
+		System.out.println(arr[0]);           //2000
+		System.out.println(arr1[0]);          //2000
+		这里arr1指向arr，是深拷贝，arr1跟arr指向的是同一内存地址。
+
+	索引越界，访问了数组中不存在的索引对应的元素(ArrayIndexOutOfBoundsException):
+		int arr[] = new int[3];
+		arr[4] = 5000;                       //这里索引为4，超出范围
+	空指针异常，访问的数组已经不再指向堆内存中的数据(NullPointerException)：
+		int arr[] = new int[3];
+		arr = null;                            //这里数组指向null，null为空值，表示不指向任何有用的有效对象，所以下面打印的时候出现报错
+		System.out.println(arr[0]);
+
+	求数组元素的个数:
+		int arr[] = {1,2,3,4,5,6};
+		System.out.println(arr.length);               //arr.length 就是求数组arr中元素的个数
+
+	使用java强for循环进行数组的遍历:
+		int numbers[] = {123,789,6565,4564};
+		for(int x:numbers)
+		{
+			System.out.println(x);
+		}
+
+
+方法:
+	定义格式:
+		public static 返回值类型 方法名(数据类型 形参名称一,数据类型 形参名称二，......)
+		{
+			//方法体内容
+		}
+	调用格式：
+		方法名(实参一，实参二...);
+	注意事项:
+	1.必须先定义再调用，位置前后无所谓
+	2.方法不能嵌套定义
+
+	方法重载:
+		方法名可以相同，但是参数不可以相同，与返回值类型无关
+	方法重载的意义: 使得方法内参数可以兼容多种类型，方法名还不变
+
+	方法参数的传递:
+		1.对于基本数据类型的参数，形式参数的改变，不会影响实际参数的值
+		2.对于数组类型的参数，形式参数的改变会直接影响实际参数的值
+
+
+
+方法中的可变参数:
+    在方法的参数类型中添加...进行传递同一类型的多个参数
+    格式:  public static double show(double... flag)               //可变参数其实也是数组，编译器编译过程中悄悄修改
+    例句:
+        public static double show(double... flag)
+        {
+            double max = flag[0];
+            for(int i=1;i<flag.length;i++)
+            {
+                if(max < flag[i]) max = flag[i];
+            }
+
+            return max;
+        }
+
+
+类与对象:
+    类的定义:
+        每个文件可以有多个类，但是只能有一个public类，并且这个public类必须与文件同名，其余类任意即可
+    例句:
+        class Student
+        {
+            String name = "孟海平";                    //定义成员变量
+            int age = 22;
+            public void stumessages()              //定义方法
+            {
+                System.out.println("名字: " + name);
+                System.out.println("年龄: " + age);
+            }
+        }
+
+    调用对象:
+        1.使用成员变量
+            格式: 对象名.成员变量名
+            例句: p.name
+        2.使用成员方法
+            格式: 对象名.方法名
+            例句: p.stumessages()
+    例句:
+        Student p = new Student();
+        p.name = "张杰";
+        p.age = 32;
+        p.stumessages();
+
+
+    成员变量: 类之内，成员方法之外的变量
+    局部变量: 类之内，成员方法之内的变量
+
+
+    关键字:
+        private关键字:
+            1.是一个权限修饰符
+            2.可以修饰成员(成员方法与成员变量)
+            3.作用是保护成员不被其他类使用，被private修饰的成员只能在本类中使用
+            针对private修饰的成员变量，如果需要被其他类使用，提供相应的操作:
+                1.提供get变量名() 方法，用来获取成员变量的值，方法使用public进行修饰
+                2.提供set变量名(参数) 方法，用来设置成员变量的值，方法使用public进行修饰
+
+            例句:
+                class Student
+                {
+                    private String name;
+                    private int id;
+                    private double score;
+
+                    public void setstudent(String names,int ids,double scores)
+                    {
+                        name = names;
+                        id = ids;
+                        score = scores;
+                    }
+
+                    public String getName()
+                    {
+                        return name;
+                    }
+
+                    public int getId()
+                    {
+                        return id;
+                    }
+
+                    public double getScore()
+                    {
+                        return score;
+                    }
+
+                }
+
+
+                public class Mhp
+                {
+                    public static void main(String args[])
+                    {
+                        Student s = new Student();
+                        s.setstudent("孟海平",22,98.3);
+
+                        System.out.println("名字: "+ s.getName());
+                        System.out.println("学号: "+ s.getId());
+                        System.out.println("成绩: "+ s.getScore());
+                     }
+
+                  };
+        thiis关键字:
+            1.this修饰的变量用于指代成员变量
+                当方法的形参跟成员变量同名时，不带this的是形参，带this的是成员变量
+            2.解决局部变量隐藏成员变量的时候使用this关键字
+            3. this 代表所在类的对象的引用
+                方法被哪个对象所使用时，this就代表哪个对象
+
+
+    构造方法:
+        作用: 创建对象
+        功能: 完成对象数据的初始化
+        格式:
+            修饰符 类名(参数)
+            {
+                   //代码
+            }
+            修饰符一般用: public
+        注意:
+            1.构造方法可以设定默认的值
+            2.当没有定义构造方法时系统会自动给出一个默认的无参构造方法，如果定义则不再使用系统给出的
+            3.如果自定义了带参构造方法，还要使用无参的构造方法，那就必须再写一个无参的构造方法
+
+        例句:
+            class Student
+            {
+                private String name;
+                private int id;
+                private double score;
+
+                public Student()
+                {
+                    System.out.println("我是无参构造方法");
+                }
+
+                public Student(String name,int id,double score)
+                {
+                    this.name = name;
+                    this.id = id;
+                    this.score = score;
+                 }
+            }
+
+            Studnet s = new Student("张磊磊"，22,99.5);
+
+
+String对象的特点:
+    1.使用 String s1 = new String()  String s1 = new String() 创建对象时，每new一个就会申请一个内存空间，这里s1和s2指向的是不同的内存空间
+    2.使用 String s3 = "abc"  String s4 = "abc" 这种是直接创建字符串对象，内容存放在堆中常量池中，这里s3和s4指向的是一个内存空间
+
+
+String对象字符串比较:
+    使用 == 做比较
+        1. 基本数据类型: 比较的是数据值是否相同
+        2. 引用类型: 比较的是地址值是否相同
+    注意: 当想要引用数据类型进行数据值的比较的时候: 使用String的equals()方法进行比较 ,equals方法返回类型是boolean类型
+    例句:
+        char s[] = {'a','b','c'};
+        String s1 = new String(s);
+        String s2 = "abc";
+        System.out.println(s1.equals(s2));                 //返回True
+
+    charAt(索引值)  可以打印出字符串中每个字符
+    例句:
+        String sc = "abcdcefg";
+        for(int i=0;i<sc.length();i++)                         //sc.length()   用于获取String 的字符串长度
+            System.out.println(sc.charAt(i));
+
+类的静态方法与静态变量:  https://blog.csdn.net/qq_51334663/article/details/113686583
+    例句:
+        public class Mhp
+        {
+            public static void main(String args[])
+            {
+                int arr[] = {1,2,3,4,5};
+                System.out.println(sarry(arr));          //静态方法无须创建实例，在本类中可以直接使用，如果是外部调用时，直接 类名.static方法名
+
+            }
+
+            public static String sarry(int arr[])                  //这里就是静态方法
+            {
+                String s="[";
+                int i;
+                for(i=0;i<arr.length;i++)                //arr.length 获取整形数组的长度
+                {
+                    s += arr[i];
+                }
+                s+="]";
+                return s;
+            }
+
+        };
+
+
+String和StringBuilder区别:
+    1.String的字符串内容是不可变的，每次 String s="abac"; s+="sadasd"; 都会申请新的内存空间进行存放新拼接的字符串
+    2.StringBuilder的字符串是可变的，使用格式是 StringBuilder s = new StringBuilder("ABC"); s.append("abcddd").append("adafda").append(1313),添加后的任意内容都是存放在首次new出来对象的内存空间里
+
+
+
+StringBuilder构造方法使用
+    1. public StringBuilder()   创建一个空白可变字符串对象，不含任何内容
+    2. public StringBuilder(String str)     根据字符串的内容，来创建可变的字符串对象
+
+StringBuilder的添加和反转字符串
+    例句:
+    	StringBuilder str = new StringBuilder("mhp");
+	    str.append(121).append("zll").append("fadfafasd");                     //这个是链式编程添加，append(任意类型)
+	    System.out.println(str);
+	    str.reverse();                                    //进行对字符串进行反转
+	    System.out.println(str);
+
+String和StringBuilder相互转化
+    String转StringBuilder:
+        StringBuilder s = new StringBuilder("1231");即可
+    StringBuilder转String:
+        String st = st.toString();即可
+    例句:
+        String s = "mhp";
+        StringBuilder st = new StringBuilder(s);
+        st.append(123).append("all");
+        String str = st.toString();
+        System.out.println(st);
+    注意: 为啥要进行转化?
+        因为StringBuilder有两个好用的方法，append和reverse，并且比String每次拼接添加省内存空间
+
+
+随机生成任意字符串:
+    public class Mhp
+    {
+        public static void main(String args[])
+        {
+            String s = "abcdefghigklmnopqrstuvwxyz1234567890!#$";
+            System.out.println(sarry(s));
+        }
+
+        public static String sarry(String strs)
+        {
+            int i;
+            Random str = new Random();
+            StringBuilder s = new StringBuilder();
+            for(i=0;i<=15;i++)
+            {
+                int a = str.nextInt(strs.length());
+                s.append(strs.charAt(a));
+            }
+            String sss = s.toString();
+            return sss;
+        }
+    };
+
+
+集合ArrayList
+    集合就是可变长的数组，数据空间大小可以进行改变
+    定义格式: ArrayList<存放内容类型> 对象名称 = new ArrayList<>();     //jdk7以后可以省略后面<>的内容，之前不可以
+    集合的增删改查:
+        //创建一个空个集合对象
+        ArrayList<String> arry = new ArrayList<>();
+        System.out.println(arry);
+        //增
+        arry.add("mhp");
+        arry.add("zll");
+        arry.add("zml");
+        System.out.println(arry);
+        //删
+        arry.remove("zll");
+        System.out.println(arry);
+        //改
+        arry.set(1,"hm");
+        System.out.println(arry);
+        //查
+        System.out.println(arry.get(0));
+        System.out.println(arry.get(1));
+    获取集合元素的个数:
+        System.out.println(arry.size());
+    注意:
+        1.当add加完后，下标就已经确定，再进行删改查操作时不得超过add后集合所有数据的下标，不然容易出现越界报错
+
+
+程序退出:  System.exit(0)
+
+继承:
+    格式:  class 子类名 extends 父类名{........}
+    supper关键字和this关键字用法
+        this: 代表本类对象的引用
+        supper: 代表父类存储空间的标识(可以理解为父类对象的引用)
+                        访问成员变量                            访问构造方法                       访问成员方法
+        this          this.成员变量(访问本类的)                this.构造方法(访问本类的)          this.成员方法(访问本类的)
+        supper        supper.成员变量(访问父类的)              supper.构造方法(访问父类的)        supper.成员方法(访问父类的)
+
+    例句:
+        class Fu{
+            String name = "mjt";
+        }
+
+        class Zi extends Fu{
+            String name = "zll";
+
+            public Zi(){
+                String names = "mhp";
+                System.out.println(names);                //打印局部变量
+                System.out.println(this.name);             //打印本类成员变量
+                System.out.println(super.name);            //打印父类成员变量
+            }
+        }
+
+        public class Mhp{
+            public static void main(String args[])
+            {
+                Zi data = new Zi();
+            }
+        }
+
+
+    继承中构造方法的访问特点:
+        子类中所有的构造方法都会默认访问父类中的无参构造方法，因为每个子类构造方法的第一条语句默认都是 : super()
+    当父类中没有无参构造方法，只有带参构造方法的时候:
+        1. 通过使用super关键字去显示调用父类的带参构造方法
+        2. 在父类中自己定义一个无参构造方法
+
+
+    继承注意点:
+        1. 子类继承父类后，再子类中重写父类的成员变量值和成员方法时，会覆盖掉父类的成员变量值和成员方法
+        2. 只有在使用子类的构造方法时，优先会调用父类的无参构造方法，当子类中没有写任何构造方法时，调用子类的构造方法也是执行父类的构造方法
+        3. 通过一个子类对象访问一个成员变量或者成员方法时，先在子类范围中找，如果找不到，再从父类的范围中找，，如果还找不到，直接报错。
+
+    @override 这个用于检测子类方法重写的正确性
+
+    方法重写的注意事项:
+        1. 父类的私有方法是不可以被重写的
+        2. 子类的方法权限不能比父类的低 (public > default(不写修饰符时默认的) > private)
+
+    继承的注意事项:
+        java支持单继承与多层继承
+        多层继承:
+            Class Gradfather{.....}
+            Class Father extends Gradfather{.....}
+            Class son extends Father{....}
+
+
+申明方法格式:  修饰符 返回类型 方法名(形参){}
+
+final常量修饰符
+    final关键字是最终的意思，可以修饰方法，类，变量
+    1. 修饰变量时，申明该变量是一个常量，不能被再次赋值
+    2. 修饰方法时，申明该方法是最终方法，该方法不能被重写
+    3. 修饰类时，申明该类是最终类，不能进行继承
+
+    注意 :
+        1. 变量为基本数据类型 : final修饰的基本数据类型值不能变
+        2. 变量为引用数据类型 : final修饰的引用数据类型地址不能发生改变，但是值可以发生改变
+
+static静态修饰符
+    非static的成员方法:
+        1.能访问静态的成员变量
+        2.能访问非静态的成员变量
+        3.能访问非静态的成员方法
+        3.能访问静态的成员方法
+    static的成员方法:
+        1.只能访问静态的成员变量
+        2.只能访问静态的成员方法
+
+
+
+
+

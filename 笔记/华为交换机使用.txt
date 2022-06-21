@@ -1,0 +1,18 @@
+华为交换机的波特率是9600
+防火墙默认用户名、密码：admin/Admin@123。
+进入系统视图界面            system-view
+退出     quit
+undo     取消命令
+查看当前配置                 display  current
+查看所有vlan下的mac地址              display  mac-address vlan 1
+查看vlan 1             display  vlan 1
+进入接口3            interface  ethernet  0/0/03
+接口配置access模式            port link-type  access
+配置接口vlan              port   default    vlan   1
+进入vlan          interface vlan 1
+vlan配置ip地址                   ip address  192.168.1.254
+查看交换机的全局配置            display  currnet-configuration
+查看交换机的具体型号,软件版本,硬件版本,运行时间等等           display  version
+查看交换机的全部接口的up跟down状态     display   interface   brief
+查看交换机的接口ip信息            display ip  interface brief
+查看交换机的动态的mac地址表               display  mac-address  dynamic
