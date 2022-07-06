@@ -48,7 +48,9 @@ switch结构:
 for循环结构:
 	for(初始化;表达式;更新){}
 
-Java 增强的for循环:
+Java 增强的for循环: (内部原理就是iterator迭代器)
+    作用: 非常简便的遍历数组和列表元素
+
 	for(声明语句:表达式){代码句子}
 	例句:
 	int numbers[] = {123,789,6565,4564};
@@ -415,32 +417,6 @@ String和StringBuilder相互转化
         }
     };
 
-
-集合ArrayList
-    集合就是可变长的数组，数据空间大小可以进行改变
-    定义格式: ArrayList<存放内容类型> 对象名称 = new ArrayList<>();     //jdk7以后可以省略后面<>的内容，之前不可以
-    集合的增删改查:
-        //创建一个空个集合对象
-        ArrayList<String> arry = new ArrayList<>();
-        System.out.println(arry);
-        //增
-        arry.add("mhp");
-        arry.add("zll");
-        arry.add("zml");
-        System.out.println(arry);
-        //删
-        arry.remove("zll");
-        System.out.println(arry);
-        //改
-        arry.set(1,"hm");
-        System.out.println(arry);
-        //查
-        System.out.println(arry.get(0));
-        System.out.println(arry.get(1));
-    获取集合元素的个数:
-        System.out.println(arry.size());
-    注意:
-        1.当add加完后，下标就已经确定，再进行删改查操作时不得超过add后集合所有数据的下标，不然容易出现越界报错
 
 
 程序退出:  System.exit(0)
@@ -1032,6 +1008,262 @@ try catch异常处理语句
     注:
         1. catch语句的参数类似方法的声明，包括一个异常类型与异常对象，异常类型必须是Throwable的子类。
         2. 一个catch语句也可以捕捉多个异常类型，这时它的异常参数可以是多个异常类型的父类。
+
+
+异常与错误
+	异常(Exception) 有两个重要的子类:  运行时异常(RuntimeException) 与 编译时异常(Exception及其子类)
+	注: 
+		运行时异常及其子类表示"JVM常用操作"引发的错误，例如: 试图使用空值对象引用(NullpointerExcption),除数为零(ArithmeicException)或数组越界(ArrayIndexOutOfBoundException)，一般都是人为的逻辑代码异常。
+
+
+自定义异常类 : 先自定义一个类然后继承Exception异常类即可
+    步骤：
+        1. 继承Exception
+        2. 自定义实现的构造方法
+        3. 需要使用的时候，使用 throw new 自定义异常的名称
+    throws:
+        1. 用在方法申明后，跟的是异常类名
+        2. 表示抛出异常，由该方法的调用者来进行处理
+        3. 表示出现异常的一种可能性，并不会一定发生这些异常
+    throw:
+        1. 也在方法体内部，跟的是异常对象名
+        2. 表示抛出异常，有方法体内的语句处理
+        3. 执行throw一定抛出了某种异常
+
+
+
+单线程并发修改异常原理:
+    我在这个地方简述一下这个异常出发的大致原理；
+    1.首先ArrayList类中有一个共享变量modCount，我们每操作一次集合这个变量都会进行加一操作（增，删，改，不包含查询）
+    2. 我们在开始遍历集合元素的时候，会记录此时的modCount作为expectedModCount，每次遍历一个元素的的时候都会检查，这两个参数是否相等；如果不想等就会抛出ConcurrentModifyException
+    异常案例:
+        List<String> e = new ArrayList<>();
+        e.add("mjh");
+        e.add("masddjh");
+        Iterator<String> it = e.Iterator();
+        while(it.hasNext())
+        {
+            String s = it.next();
+            if(s.equals("mjh"))
+            {
+                e.add("mhp");
+            }
+        }
+        System.out.println(e);
+
+    解决方案:(是list列表迭代器):
+        ListIterator<String> it = e.listIterator();         //ListIterator (列表迭代器)
+        while(it.hasNext())
+        {
+            String s = it.next();
+            if(s.equals("mjh"))
+            {
+                it.add("mhp");             //使用列表迭代器的add方法进行加操作后，共享变量modcount和expcetedmodcout都会进行重新赋值，使得两个值一样，从而不会发生并发异常。
+            }
+        }
+        System.out.println(e);
+
+集合类体系结构
+    一、单列 (Collection)
+
+        注: Collection 是最基本的集合接口，一个 Collection 代表一组 Object，即 Collection 的元素, Java不提供直接继承自Collection的类，只提供继承于的子接口(如List和set)。
+
+        例句:
+            Collection<String> s = new ArrayList<>();         //利用多态的方式进行使用Collection集合体
+                    s.add("mhp");
+                    s.add("zll");
+                    s.add("zml");                 //add()方法进行添加元素
+
+                    System.out.println(s.contains("zll"));      //contains()方法进行查找指定内容在集合中是否存在
+
+                    s.remove("zll");           //remove()方法进行删除指定内容在集合中
+
+                    System.out.println(s);
+
+                    s.clear();              //clear()方法 进行对集合中的所有元素进行全部清除
+
+                    System.out.println(s.isEmpty());         //isEmpty()方法是判断集合是否为空
+
+                    System.out.println(s);
+        colletion集合遍历
+            遍历(Iterator) 使用Collection集合的iterator方法进行生成一个itr子类
+                public Itr iterator()
+                {
+                    return new Itr;
+                }
+
+        例句:
+            import java.util.Collection;
+            import java.util.ArrayList;
+            import java.util.Iterator;
+
+            //标准类
+            class Student
+            {
+            	private String name;
+            	private int age;
+
+            	public Student(){}
+            	public Student(String name,int age)
+            	{
+            		this.name = name;
+            		this.age = age;
+            	}
+
+            	public void setName(String name)
+            	{
+            		this.name = name;
+            	}
+
+            	public String getName()
+            	{
+            		return this.name;
+            	}
+
+            	public void setAge()
+            	{
+            		this.age = age;
+            	}
+
+            	public int getAge()
+            	{
+            		return this.age;
+            	}
+
+            }
+
+            public class HelloWorld {
+                public static void main(String []args) {
+            		Collection<Student> s = new ArrayList();
+            		Student a1 = new Student("mhp",22);
+            		Student a2 = new Student("zll",23);
+
+            		s.add(a1);         //将下面的两个student数据类进行添加
+            		s.add(a2);
+
+            		Iterator<Student> c = s.iterator();             //通过Collection的iterator方法进行生成迭代器对象
+            		while(c.hasNext())           //hasNext()方法进行判断集合中下一个数据是否存在
+            		{
+            			Student ss = c.next();                  //next()方法进行执行下一个数据流
+            			System.out.println("名字: " + ss.getName() + ",年龄: " + ss.getAge());
+            		}
+                }
+            }
+
+
+        1. list (元素内容可重复,数据内容是从下标为0开始的有序集合)
+            list的遍历: 使用for循环打印集合内个数，使用get方法进行得到每个内容值
+            例句:
+                import java.util.ArrayList;
+                import java.util.List;
+                import java.util.Iterator;
+
+                class Student
+                {
+                    private String name;
+                    private int age;
+
+                    public Student(){}
+                    public Student(String name,int age)
+                    {
+                        this.name = name;
+                        this.age = age;
+                    }
+
+                    public void setName(String name)
+                    {
+                        this.name = name;
+                    }
+
+                    public String getName()
+                    {
+                        return this.name;
+                    }
+
+                    public void setAge()
+                    {
+                        this.age = age;
+                    }
+
+                    public int getAge()
+                    {
+                        return this.age;
+                    }
+
+                }
+
+
+                public class Demo
+                {
+
+                    public static void main(String args[])
+                    {
+
+                        List<Student> e = new ArrayList<>();                 //使用多态的方式进行实例化ArrayList子类，因为List是接口，不能直接使用，必须使用实现类对象进行调用
+                        Student s1 = new Student("mhp",12);
+                        Student s2 = new Student("zll",56);
+
+                        e.add(s1);
+                        e.add(s2);
+
+                        for(int i=0;i<e.size();i++)           //使用for循环进行打印
+                        {
+                            Student s = e.get(i);
+                            System.out.println(s.getName() +  "  ," + s.getAge() );
+                        }
+
+                        Iterator<Student> it = e.iterator();                //使用迭代器进行打印
+                        while(it.hasNext()){
+                            Student s = it.next();
+                            System.out.println(s.getName() +  "  ," + s.getAge() );
+                        }
+
+                    }
+                }
+
+            具体类:
+                1. ArrayList
+                    集合ArrayList
+                        ArrayList集合就是可变长的数组，数据空间大小可以进行改变
+                        定义格式: ArrayList<存放内容类型> 对象名称 = new ArrayList<>();     //jdk7以后可以省略后面<>的内容，之前不可以
+                        集合的增删改查:
+                            //创建一个空个集合对象
+                            ArrayList<String> arry = new ArrayList<>();
+                            System.out.println(arry);
+                            //增
+                            arry.add("mhp");
+                            arry.add("zll");
+                            arry.add("zml");
+                            System.out.println(arry);
+                            //删
+                            arry.remove("zll");
+                            System.out.println(arry);
+                            //改
+                            arry.set(1,"hm");
+                            System.out.println(arry);
+                            //查
+                            System.out.println(arry.get(0));
+                            System.out.println(arry.get(1));
+                        获取集合元素的个数:
+                            System.out.println(arry.size());
+                        注意:
+                            1.当add加完后，下标就已经确定，再进行删改查操作时不得超过add后集合所有数据的下标，不然容易出现越界报错
+
+                2. LinkedList
+        2. set (元素内容不可重复，且数据顺序不唯一，是无序的集合)
+    二、双列 (Map)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
