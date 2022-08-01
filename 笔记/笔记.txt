@@ -8,6 +8,10 @@
 数据类型中布尔值定义:    boollean a = True/FALSE;
 数据类型中字符串定义:    String s = "字符串内容";                 //这里采用string构造方法进行直接创建字符串对象
 
+if语句中的小括号里的表达式必须是boolean类型
+boolean(基本数据类)的默认值是false
+BooLean(包装类)的默认值是null
+
 强制类型转换注意事项:
 	只能是将大类型的值或变量强制转化为小类型的值或变量
 
@@ -728,6 +732,35 @@ static静态修饰符
 
         格式:  public class 类名 implements 接口名{....}
 
+    实现接口必须要重写所有方法吗:
+        如果子类是非抽象类，则必须实现接口中的所有方法；
+        如果子类是抽象类，则可以不实现接口中的所有方法，因为抽象类中允许有抽象方法的存在！
+
+    接口的默认方法:  default void show(){代码内容}
+      1. 实现类没必要重写该方法
+      例句:
+        public interface Inter {
+            default void show3()
+            {
+                System.out.println("我是默认方法");
+            };
+        }
+
+        public class MyInter implements Inter {
+          .....;
+        }
+        Inter i = new MyInter();
+        i.show3();
+    接口的静态方法： public static void show(){代码内容}
+      1. 直接接口.静态方法()使用
+          public interface Inter {
+            public static void show4()
+            {
+                System.out.println("我是静态方法");
+            }
+          }
+          Inter.show4();
+
 接口和抽象类的区别:
     成员变量和成员方法:
         类: 可以有抽象方法和非抽象方法，final 变量 和 局部变量，有构造方法
@@ -1032,6 +1065,94 @@ try catch异常处理语句
 
 
 
+泛类型
+    1.泛类
+        格式 :
+            public class 类名<泛型标记号>{
+                public 返回值(可以是泛型) 方法名()
+            }
+        例句:
+            public class Geek<T> {
+
+                private T t;
+
+                public Geek(){}
+
+                public void Geek(T t)
+                {
+                    this.t = t;
+                }
+
+                public T getT() {
+                    return t;
+                }
+
+                public void setT(T t) {
+                    this.t = t;
+                }
+            }
+
+            Geek<String> g = new Geek<String>();
+            g.setT("mhp");
+            System.out.println(g.getT());
+    2.泛型方法
+        格式 :
+            public class 类名{
+                public <泛型标号> 返回类型 方法名(泛型标号 形参名)
+                {
+                    ......
+                }
+            }
+         例句:
+            Geek g = new Geek();
+            g.show("mhp");
+            g.show(22);
+            g.show(59.6);
+
+     3.泛型接口
+        格式:
+            interface 接口名<泛类标号>{....}
+            class 实现类名<泛类标号> implements 接口名<泛类标号>{.......}
+
+       例句:
+            interface Anmial{
+
+                void show(T t);
+
+            }
+
+            class Caatimplements Anmial{
+
+                @Override
+
+                public void show(T t)
+
+                {
+
+                    System.out.println(t);
+
+                }
+
+            }
+
+            public class HelloWorld {
+
+                public static void main(String []args) {
+
+                    Anmial s = new Caat();
+
+                    s.show("mhp");
+
+                    Anmial t = new Caat();
+
+                    t.show(5);
+
+                }
+            }
+
+
+
+
 单线程并发修改异常原理:
     我在这个地方简述一下这个异常出发的大致原理；
     1.首先ArrayList类中有一个共享变量modCount，我们每操作一次集合这个变量都会进行加一操作（增，删，改，不包含查询）
@@ -1250,8 +1371,219 @@ try catch异常处理语句
                             1.当add加完后，下标就已经确定，再进行删改查操作时不得超过add后集合所有数据的下标，不然容易出现越界报错
 
                 2. LinkedList
+                    例句:
+                    LinkedList<Student> s = new LinkedList<>();                //链表式操作
+                    Student a1 = new Student("zll",55);
+                    Student a2 = new Student("mhp",54);
+
+                    s.add(a1);
+                    s.add(a2);
+
+                    for(Student x : s)
+                    {
+                        System.out.println(x.getName() + " " + x.getAge());
+                    }
+                LinkedList和ArrayList区别:
+                    1.ArrayList是最常用的list列表集合，查询和修改操作效率高
+                    2.LinkedList是链表式集合，增加和删除效率高，查询和修改效率低下
+                    3.首推ArrayList集合
         2. set (元素内容不可重复，且数据顺序不唯一，是无序的集合)
+            具体类:
+                HashSet:
+                    例句:
+                        Set<String> s = new HashSet<>();           //通过多态的方式,set集合中没有重复的内容，所以下面add添加的实际只有两个
+                        s.add("mhp");
+                        s.add("zll");
+                        s.add("mhp");
+
+                         System.out.println(s.size());         //获取集合中的元素的个数
+
+                         s.remove("mhp");         //删除指定内容的元素
+
+                        System.out.println(s.hashCode());          //hashCode()方法进行得到某个对象或者字符串的int类型的hash值。
+
+                        //使用增加for循环进行遍历set集合
+                        for(String x : s)
+                        {
+                            System.out.println(x);
+                        }
+
+                        s.clear();            //清除集合中的所有元素
+
+                        System.out.println(s);
+                HashSet保存集合数据的一致性的步骤:
+                    1. 先得到对象数据的Hash值
+                    2. 拿到其Hash值进行反解密得到存储的地址，判断该位置是否有元素存在:
+                       1.如果存在，就跳过
+                       2.如果不存在就将该数据添加到集合中
+                    3. 再判断该位置中元素的Hash值与当前将要存储的元素的Hash值是否一样
+                        1. 如果一样，就是要equals方法进行再次判断元素的值是否一样:
+                            1. 如果一样就跳过
+                            2. 如果不一样就添加
+                        2. 如果不一样就添加
+                TreeSet类:
+                    例句:
+                        TreeSet<Integer> e = new TreeSet<>();
+                        e.add(50);
+                        e.add(920);
+                        e.add(100);
+                        e.add(10);
+
+                        for(Integer x : e)
+                        {
+                            System.out.println(x);
+                        }
+                        //这里使用的是TreeSet的无参构造方法，默认是从小到大的自然排序
+                        //因为是set无序集合，没有下标，只能使用增加for循环进行全部的打印
+					注:
+						1.TreeSet使用无参构造的时候，默认是自然排序，当指定使用有参构造的时候按照给定的比较器进行排序操作
+						2.TreeSet的自然排序仅仅是对Integer这个包装类进行排序，想要对类对象进行排序就需要将类实现compareable接口，然后重写里面的compareTo方法
+						3.compareable接口会对实现它的每个类对象进行一个整体的排序
+						4.compareTo方法设定的是一个规则:
+							return 0;(两个元素一样，不需要存储)
+							return 正整数;(两个元素不同，后者大于前者直接存储在集合后面）
+							return 负数;(两个元素不同，后者小于前者，该元素需存储在前面)
+					compareable比较器例句:
+
+						import java.util.*;
+
+						class Student implements Comparable<Student>
+						{
+							private String name;
+							private int age;
+							
+							public Student(){}
+							public Student(String name,int age)
+							{
+								this.name = name;
+								this.age = age;
+							}
+							
+							public void setName(String name)
+							{
+								this.name = name;
+							}
+							
+							public String getName()
+							{
+								return this.name;
+							}
+							
+							public void setAge(int age)
+							{
+								this.age = age;
+							}
+							
+							public int getAge()
+							{
+								return this.age;
+							}
+							
+							public int compareTo(Student s)
+							{
+								int num = this.age - s.age;
+								int num2 = num==0?this.name.compareTo(s.name):num;
+								return num2;
+							}
+						}
+
+						public class HelloWorld {
+							public static void main(String args[]) {
+								TreeSet<Student> s = new TreeSet<Student>();
+								
+								Student a1 = new Student("mhp",22);
+								Student a2 = new Student("zll",202);
+								Student a3 = new Student("mhasdfp",12);
+								Student a4 = new Student("zml",12);
+								
+								s.add(a1);
+								s.add(a2);
+								s.add(a3);
+								s.add(a4);
+								
+								for(Student x : s)
+								{
+									System.out.println(x.getName() + " " + x.getAge());
+								}
+							}
+						}
+			    comparator比较器例句：
+			        该比较器比compareable相对来说简便，不需要修改实现类代码
+			        //采用匿名内部类的方法进行
+			        TreeSet<Student> s = new TreeSet<Student>(
+			            new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                int num = o1.getAge() - o2.getAge();
+                                int num2 = num==0?o1.getName().compareTo(o2.getName()):num;
+                                return num2;
+                            }
+                        });
+
+                    Student a1 = new Student("mhp",22);
+                    Student a2 = new Student("zll",202);
+                    Student a3 = new Student("mhasdfp",12);
+                    Student a4 = new Student("zml",12);
+
+                    s.add(a1);
+                    s.add(a2);
+                    s.add(a3);
+                    s.add(a4);
+
+                    for(Student x : s)
+                    {
+                        System.out.println(x.getName() + " " + x.getAge());
+                    }
+
     二、双列 (Map)
+        具体类(HashMap):
+
+        1.它是存储内容是键值对(key-value)的映射
+
+        2.它是无序的，所以不会记录插入的顺序，并且key值是唯一性，同一个key，不同的value时，后一个键值对还覆盖前一个键值对。
+
+        方法:
+
+            1. put() 进行添加数据
+
+            2.clear() 清理全部数据
+
+            3. values()获取value的所有值
+
+            4. keyset()获取key的所有值
+
+
+
+        例句:
+
+        import java.util.*;
+        public class Demo {
+            public static void main(String args[])
+            {
+                Maps = new HashMap<>();
+                s.put("mhp","123456");
+                s.put("zll","789456");
+                for(String x : s.values())
+                    System.out.println(x);
+
+                for(String x : s.keySet())
+                    System.out.println("key: " + x + ",value: " + s.get(x));
+                s.clear();
+                System.out.println(s);
+
+
+
+                //遍历map集合对象
+                Set<Map.Entry<String,String>> st = s.entrySet();
+                for(Map.Entry<String,String> x : st)
+                {
+                    System.out.println(x.getKey());
+                    System.out.println(x.getValue());
+                }
+
+
+             }
+        }
 
 
 
@@ -1261,13 +1593,1907 @@ try catch异常处理语句
 
 
 
+//HashMap存储学生对象并遍历
+
+Demo.java
+
+import java.util.*;
+​
+public class Demo {
+    public static void main(String args[])
+{
+        Map<Integer,Student> map = new HashMap<>();
+        for(int i=1;i<10;i++)
+        {
+            int id = Integer.parseInt(("091119030" + String.valueOf(i)));
+            Gentrates g = new Gentrates();
+            map.put(id,g.show());
+        }
+​
+//        Set<Map.Entry<Integer, Student>> s = map.entrySet();
+//        for(Map.Entry<Integer,Student> x : s)
+//        {
+//            System.out.println("id: " + x.getKey() + " name : " + x.getValue().getName());
+//        }
+        System.out.println(map);
+        for(Integer x : map.keySet())
+        {
+            System.out.println("id: " + x + " name : " + map.get(x).getName());
+        }
+    }
+}
+Student.java
+
+public class Student{
+​
+    private String name;
+    private int age;
+    private Double chinese;
+    private Double math;
+    private Double english;
+​
+​
+    public Student() {
+    }
+​
+    public Student(String name, int age, Double chinese, Double math, Double english)
+    {
+        this.name = name;
+        this.age = age;
+        this.chinese = chinese;
+        this.math = math;
+        this.english = english;
+    }
+​
+    public String getName() {
+        return name;
+    }
+​
+    public int getAge() {
+        return age;
+    }
+​
+    public Double getChinese() {
+        return chinese;
+    }
+​
+    public Double getMath() {
+        return math;
+    }
+​
+    public Double getEnglish() {
+        return english;
+    }
+​
+    public void setName(String name) {
+        this.name = name;
+    }
+​
+    public void setAge(int age) {
+        this.age = age;
+    }
+​
+    public void setChinese(Double chinese) {
+        this.chinese = chinese;
+    }
+​
+    public void setMath(Double math) {
+        this.math = math;
+    }
+​
+    public void setEnglish(Double english) {
+        this.english = english;
+    }
+​
+    @Override
+    public String toString()
+    {
+        return "name : " + this.name +
+                ", age : " + this.age +
+                ", chinese : " + this.chinese +
+                ", math : " + this.math +
+                ", english : " + this.english +
+                ", Tscore : " + (this.english + this.math + this.chinese);
+    }
+}
+Genteate.java
+
+import java.util.Random;
+​
+//随机生成学生信息
+public class Gentrates {
+    private String str = "abcdefghijklmnopqrstuvwxyz";
+​
+    public Student show()
+{
+        Random r = new Random();
+        StringBuilder name = new StringBuilder();
+        for(int j=0;j<3;j++)
+        {
+            int num = r.nextInt(25);
+            name.append(str.charAt(num));
+        }
+        String names = name.toString();
+        int age = r.nextInt(28);
+        Double chinese = r.nextDouble() * 100;
+        Double math = r.nextDouble() * 100;
+        Double english = r.nextDouble() * 100;
+​
+        Student data = new Student(names,age,chinese,math,english);
+        return data;
+    }
+}
+
+
+当类对象作为key的时候，如果key一样的情况下，为了保证可以的唯一性
+
+，使后一个值覆盖前一个，须重写类的hashcode和equalas方法即可。
+
+
+
+集合嵌套
+
+1. arraylist里存放hashset进行遍历循环
+
+List<Map<String,String>> L = new ArrayList<>();
+Map<String,String> map = new HashMap<>();
+map.put("mhp","123456");
+map.put("zll","163256");
+map.put("zml","124656");
+map.put("szb","156566");
+​
+L.add(map);
+Map<String,String> map1 = new HashMap<>();
+map1.put("mhp","199999");
+map1.put("zll","45245454");
+map1.put("zml","122222");
+map1.put("szb","11111");
+L.add(map1);
+for(Map<String,String> x: L)  //得出2个map
+{
+    for(String s : x.keySet())
+    {
+        System.out.println("key: " + s + " values: " + x.get(s));
+    }
+}
+2.hashset里放arraylist进行遍历循环
+
+Map<String,ArrayList<String>> map = new HashMap<>();
+ArrayList<String> L = new ArrayList<>();
+L.add("wz");
+L.add("cy");
+L.add("hy");
+​
+ArrayList<String> L1 = new ArrayList<>();
+L1.add("4399");
+L1.add("7k7k");
+L1.add("3199");
+map.put("2629925922",L);
+map.put("2011230593",L1);
+​
+for(String x : map.keySet())
+{
+    ArrayList<String> e = map.get(x);
+    for(String ss : e)
+    {
+        System.out.println("账号: " + x + "  游戏: " + ss);
+    }
+}
+
+
+
+
+collections类的升序和逆序和随机打乱
+    sort() 升序
+    reserve() 逆序
+    shffue() 随机打乱
+
+
+
+模拟斗地主
+
+//装牌
+import java.util.ArrayList;
+import java.util.List;
+​
+public class Vcard {
+​
+    public static ArrayList<String> show()
+    {
+        String s[] = {"黑桃","红桃","方块","红心"};
+        ArrayList<String> L = new ArrayList<>();
+        int j = 0;
+        for(int k = 0;k<=3;k++)
+        {
+            j++;
+            for(int i=1;i<=13;i++)
+            {
+                if(j>3) {
+                    j = 0;
+                }
+​
+                switch(i)
+                {
+                    case 11:
+                    {
+                        String name = s[j] + "J";
+                        L.add(name);
+                        break;
+                    }
+                    case 12:
+                    {
+                        String name = s[j] + "Q";
+                        L.add(name);
+                        break;
+                    }
+                    case 13:
+                    {
+                        String name = s[j] + "K";
+                        L.add(name);
+                        break;
+                    }
+                    default: String name = s[j] + String.valueOf(i);
+                        L.add(name);
+​
+                }
+            }
+        }
+        L.add("大王");
+        L.add("小王");
+        return L;
+    }
+}
+​
+//装牌，洗牌
+import java.util.*;
+​
+public class Demo {
+    public static void main(String args[])
+    {
+      ArrayList<String> s = Vcard.show();
+      Collections.shuffle(s);
+      List<String> name1 = new ArrayList<>();
+      List<String> name2 = new ArrayList<>();
+
+      int flag = 0;
+      //发牌
+      for(String x : s)
+      {
+          if(flag == 1)
+          {
+              name1.add(x);
+              flag = 0;
+          }
+          else
+          {
+              name2.add(x);
+              flag = 1;
+          }
+      }
+
+      System.out.println("自己的牌: ");
+      Collections.sort(name1);
+      for(String x: name1)
+      {
+          System.out.println(x);
+      }
+
+      System.out.println();
+      System.out.println();
+
+      System.out.println("对方的牌: ");
+      Collections.sort(name2);
+      for(String x: name2)
+      {
+          System.out.println(x);
+      }
+}
+
+
+//统计字符中各个字符出现的个数
+public class Demo
+{
+    public static void main(String args[])
+    {
+        String s = "'abcdefghijklmnopqrstuvwxyz123456789!@#$%^&*()";
+        StringBuilder str = new StringBuilder();
+        for(int j=0;j<15;j++)
+        {
+            Random r = new Random();
+            int id = r.nextInt(26);
+            str.append(s.charAt(id));
+        }
+        HashMap<Character,Integer> map = new HashMap<>();
+
+        System.out.println("字符串: ");
+        System.out.println(str);
+
+        for(int i = 0;i<str.length();i++)
+        {
+            char key = str.charAt(i);
+            Integer value = map.get(key);
+            if(value == null)
+            {
+                map.put(key,1);
+            }else
+            {
+                value++;
+                map.put(key,value);
+            }
+        }
+        System.out.println(map);
+    }
+}
+
+
+JAVA中System.getProperty()方法获取信息的用法 : https://www.jianshu.com/p/c5683cfb515f
+
+File文件类操作之两大重要流
+System.getProperty("user.dir")             获取当前路劲
+String location = System.getProperty("user.dir")  + "\\src" + "\\Audit" + "\\test.txt";
+File f = new File(location);
+if(!f.exists())        //exists方法判断该路劲是否存在，存在就返回true，不存在就返回false
+{
+    f.createNewFile();           //createNewFile方法用于创建文件,前提是抽象路劲要存在，不然会抛出IEOExpectioin错误
+}
+
+    1. 读取文件
+        FileInputStream是InputStream的子类,FileInputStream流被称为文件字节输入流，意思指对文件数据以字节的形式进行读取操作如读取图片视频等，使用时会创建一个文件进行读数据
+        InputStreamReader是从字节流到字符流的转化。
+        read方法是从输入流中读取一个字节返回int型变量，若到达文件末尾，则返回-1
+        string类的contains方法判断该字符串中是否有指定内容存在
+        例句:
+            String file = "文件位置";
+            InputStreamReader itr = new InputStreamReader(new FileInputStream(file));
+            char c[] = new char[1024];
+            int len;
+            String s = "";
+            while((len = itr.read(c)) != -1)
+            {
+                String text =  new String(c,0,len);
+                for(String x : ErrorShow)
+                {
+                    if(text.contains(x))
+                    {
+                        s = x;
+                    }
+                }
+            }
+    2. 写入数据
+        FileOutputStream是数据写入文件或文件描述符的输出流，使用时会创建一个文件进行写数据
+        write方法参数传递是字节流
+        String类的getBytes方法是将字符变成字节
+        例句:
+            File f = new File("");
+            FileOutputStream fo = new FileOutputStream(f.getAbsoluteFile()+"\\test.txt");
+            for(String x : map.keySet())
+            {
+                String errordata = "问题文件:   " + x + "     问题内容 : " + map.get(x);
+                fo.write(errordata.getBytes());
+            }
+            fo.close();
+
+
+为什么出现字符流？因为字节流操作中文不是特别方便，所以Java就提供字符流；字符流=字节流+编码表；字节流复制文本文件时也会有中文，但是没有问题，原因是最终底层操作会自动进行字节拼接成中文，如何识别中文呢？是因为汉字在存储时无论选择哪种编码存储，第一个字节都是负数。
+
+一个汉字存储:
+    1. 如果是GBK编码存储，占用2个字节
+    2. 如果是utf-8编码存储，占用3个字节
+
+
+
+序列化
+    序列化是一种用来处理对象流的机制，所谓对象流就是将对象的内容进行流化，将数据分解成字节流，以便让我们存储在文件中或者是在网络上进行传输。简单来说就是把Java对象转换为字节序列的过程。
+    为啥要进行序列化操作:
+        1.网络传输的数据都必须是二进制的，但是在Java中，数据的存储形式都是对象，是没有办法直接在网络中进行传输的，所以就需要对Java的对象进行序列化，并且要求这个序列化是可逆的，也就是说要可以进行反序列化，否则接收方不能知道你传递的是何种信息。
+        2.为了数据的可持续化，将内存中的对象状态进行保存到文件或者数据库中。
+
+    类可以序列化的前提:
+        1.该类必须继承Serializable接口
+        2.该类中的所有属性都是可以序列化
+
+    序列化和反序列化例句:
+        public class Student implements Serializable {......}
+
+        public static void main(String args[]) throws IOException, ClassNotFoundException {
+
+            String location = System.getProperty("user.dir") + "\\src" + "\\com" + "\\2.txt";
+            File f = new File(location);
+            if(!f.exists())
+            {
+                f.createNewFile();
+            }
+            write(f);
+            read(f);
+
+        }
+
+        public static void write(File f) throws IOException {
+            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(f));
+            Student s = new Student("张磊磊",22);
+            os.writeObject(s);
+            os.close();
+        }
+
+        public static void read(File f) throws IOException, ClassNotFoundException {
+            ObjectInputStream oi = new ObjectInputStream(new FileInputStream(f));
+            Student s = (Student)oi.readObject();
+            System.out.println("name : " + s.getName() + " age : " + s.getAge());
+            oi.close();
+        }
+
+    注:
+        当我们序列化完一个对象后，修改其类文件，会进行报错吗?
+            答: 会抛出java.io.InvalidClassException异常
+        如何解决该异常呢?
+            答: 该对象所属的类加一个serialVersionUID
+                private static final long serialVersionUID = 45L;
+        如果想设定某个成员变量不参与序列化操作时，应该怎样做?
+            答: 给成员变量加一个transient即可，该关键字所标记得到成员变量不会参与序列化操作,想要获取该关键字标记的成员变量值时，可以得到但是一直为空。
+
+        字节流写数据进行换行:
+            1.windows使用\n\r
+            2.linux使用\n
+            3.mac使用\r
+
+        字节流写数据怎样进行追加
+            使用FileoutStream("文件路径",true)
+            当第二个参数是true是表示追加
+
+
+Porperties类
+    该类主要用于读取Java的配置文件，不同的编程语言有自己所支持的配置文件，配置文件中很多变量是经常改变的，为了方便用户的配置，能让用户够脱离程序本身去修改相关的变量设置。就像在Java中，其配置文件常为.properties文件，是以键值对的形式进行参数配置的。
+    该类返回和存储对象内容是map键值对的形式存储。
+    BufferedInputStream类是字符输入流操作，进行读取文件时用。
+    Properties类的load方法，用来读取配置文件信息操作
+    Properties类的store方法，用来进行写配置文件操作，第一个参数位置是路劲位置，第二个是给文件标注的信息
+    Properties类的stringPropertyNames()  返回此属性列表中的一组键，其中键及其对应的值是字符串。
+    Properties类的getProperty方法是进行获取key对应的value对象值。
+
+    例句:
+        public class config {
+            //配置文件路劲
+            private static String location = System.getProperty("user.dir") + "\\src" + "\\Rconfig" + "\\jdbc.properties ";
+            //读取配置文件信息
+            public static void Cload() throws IOException {
+                BufferedInputStream bi = new BufferedInputStream(new FileInputStream(location));
+                Properties p = new Properties();
+                p.load(bi);
+                bi.close();
+                for(String x : p.stringPropertyNames())
+                {
+                    System.out.println(x);
+                    System.out.println(p.getProperty(x));
+                }
+            }
+
+            //写入配置文件信息
+            public static void Cstore() throws IOException {
+                BufferedOutputStream bo = new BufferedOutputStream(new FileOutputStream(location));
+                Properties p = new Properties();
+                p.setProperty("user","root");
+                p.setProperty("password","123456");
+                p.store(bo,"我的数据库配置信息");
+                bo.close();
+            }
+        }
+
+
+多线程
+    Thead类 : 多线程类。
+    	执行流程:
+    		1. 创建一个子类继承Thread父类，重写run方法
+    		2. run方法里写上执行语句代码
+    		3. new一个子类，使用start方法进行开始多线程的执行，java虚拟机会自动执行run方法
+
+    	getName()方法得到多线程的名称
+    	setName()方法设置多线程的名称
+    	可以使用带参构造方法进行传入多线程的名称
+        Thread.currentThread().getName()用来返回当前正在执行的线程对象的引用
+        setPriority()方法用来设置线程的优先级
+        Java 线程的优先级是一个整数，其取值范围是 1 （Thread.MIN_PRIORITY ） - 10 （Thread.MAX_PRIORITY ）
+        默认情况下，每个线程都分配的是5
+
+        例句:
+            public class MThread extends Thread {
+                public MThread(String name)
+                {
+                    super(name);
+                }
+            ​​
+                @Override
+                public void run()
+                {
+                    for(int i=0;i<100;i++)
+                    {
+                        System.out.println(getName() + ": " + i);
+                    }
+                }
+            }
+
+            public class run {
+                public static void main(String args[])
+                {
+                    MThread td1 = new MThread("zll");
+                    MThread td2 = new MThread("szb");
+                    td1.start();
+                    td2.start();
+                }
+            }
+
+        join方法 等待该线程结束
+        setDeemo方法 设置该线程为守护线程,当全部线程都为守护线程时，java虚拟机就将退出
+
+        例句:
+            public static void main(String args[]){
+
+                Tr t0 = new Tr("刘备");
+                Tr t1 = new Tr("关羽");
+                Tr t2 = new Tr("张飞");
+
+                t0.start();
+
+                try {
+                    t0.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //将主线程名称设置为**
+                Thread.currentThread().setName("刘备");
+
+                //设置守护线程
+                t1.setDaemon(true);
+                t2.setDaemon(true);
+
+                t1.start();
+                t2.start();
+
+                for(int i=0;i<10;i++)
+                {
+                    System.out.println(Thread.currentThread().getName() + " : "  + i);
+                }
+
+            }
+
+     实现多线程的方式2 : 实现Runnable接口:https://www.jb51.net/article/226912.htm
+
+     1. 写一个子类实现Runnable接口
+
+     2. 重写run方法，里面写上运行代码
+
+     3. 创建子类对象
+
+     4. 创建Thread对象，将子类对象作为其构造方法的参数
+
+     5. Thread对象.start()方法启动线程
+
+     例句:
+
+
+
+         Tm t = new Tm();
+         Thread t11 = new Thread(t,"一号窗口");
+         Thread t22 = new Thread(t,"二号窗口");
+         Thread t33 = new Thread(t,"三号窗口");
+         t11.start();
+         t22.start();
+         t33.start();
+     使用runnable接口的好处:
+
+         1. 可以避免单线程的局限性
+
+         2. 可以将代码和线程和数据进行有效的分离
+
+
+
+     synchronized是Java中的关键字，是一种同步锁。
+
+     格式: synchronized(任意对象) {......}
+
+     好处: 可以解决线程安全问题
+
+     坏处: 当线程特别多时，会大量的耗费资源
+
+     它修饰的对象有以下几种：
+
+     修饰一个代码块，被修饰的代码块称为同步语句块，其作用的范围是大括号{}括起来的代码，作用的对象是调用这个代码块的对象,当一个线程访问synchronize(对象)代码块时，其他线程访问该对象时将先等待；
+
+     例句:
+
+     public class Tm implements Runnable {
+
+         private int number = 100;
+         private Object obj = new Object();
+         private Boolean flag = true;
+
+         @Override
+         public void run()
+         {
+             while(flag)
+             {
+                 synchronized (obj)
+                 {
+                     if(number > 0)
+                     {
+                         try {
+                             Thread.sleep(100);
+                         } catch (InterruptedException e) {
+                             e.printStackTrace();
+                         }
+                         System.out.println(Thread.currentThread().getName() + "正在出售第 " + number-- + "张票");
+                     }else
+                     {
+                         flag = false;
+                     }
+
+                 }
+             }
+         }
+     }
+     　　2. 修饰一个方法，被修饰的方法称为同步方法，其作用的范围是整个方法，作用的对象是调用这个方法的对象；
+     　　3. 修改一个静态的方法，其作用的范围是整个静态方法，作用的对象是这个类的所有对象；
+     　　4. 修改一个类，其作用的范围是synchronized后面括号括起来的部分，作用主的对象是这个类的所有对象。
+
+
+
+     买票案例
+     run.java
+     ​
+     public class run {
+     ​
+         public static void main(String args[])
+         {
+             Tm t = new Tm();
+             Thread t11 = new Thread(t,"一号窗口");
+             Thread t22 = new Thread(t,"二号窗口");
+             Thread t33 = new Thread(t,"三号窗口");
+             t11.start();
+             t22.start();
+             t33.start();
+     ​
+         }
+     }
+
+
+     Tm.java
+     ​
+     public class Tm implements Runnable {
+     ​
+         private int number = 100;
+         private Object obj = new Object();
+         private Boolean flag = true;
+     ​
+         @Override
+         public void run()
+         {
+             while(flag)
+             {
+                 synchronized (obj)
+                 {
+                     if(number > 0)
+                     {
+                         try {
+                             Thread.sleep(100);
+                         } catch (InterruptedException e) {
+                             e.printStackTrace();
+                         }
+                         System.out.println(Thread.currentThread().getName() + "正在出售第 " + number-- + "张票");
+                     }else
+                     {
+                         flag = false;
+                     }
+     ​
+                 }
+             }
+         }
+     }
+     ​
+
+
+     同步方法:
+         格式: 修饰符 synchronized 返回类型 方法名{....}
+         同步方法的锁:
+         this关键字
+
+     同步静态方法:
+       格式: 修饰符 static synchronized 返回类型 方法名{....}
+       同步静态方法的锁：
+            类名.class
+
+     多线程线程安全类
+         Stringbuufer类
+         Ventor类
+         HashTable类
+
+     单线程使用类
+         Stringbuiledr类
+         ArrayList类
+         HashMap类
+
+     synchronized 和 Lock锁 :
+         当访问量低下的情况下，两种方式都一样，当出现高并发的时候，synchronized会升级成重量级锁，大大影响线程的效率，使用Lock锁很好的解决此问题。
+
+     Lock锁
+       lock方法 获取锁
+       unlock方法 释放锁
+         1.ReentrantLock为读写互斥锁，但在大部分场景中，读业务操作要远大于写业务操作，并且在多线程编程中，读操作不会修改共享资源的数据，如果多个线程仅仅是读取共享资源的化，就没有必要对该共享资源加互斥锁，加了反而影响性能。
+             例句:
+                 public class Tm implements Runnable {
+                     private int number = 100;
+                     private Object obj = new Object();
+                     private Boolean flag = true;
+
+                     private Lock l = new ReentrantLock();
+
+                     @Override
+                     public void run()
+                     {
+                         while(flag)
+                         {
+                             try{
+                                 l.lock();
+                                 if (number >0) {
+                                         try {
+                                             Thread.sleep(100);
+                                         } catch (InterruptedException e) {
+                                             e.printStackTrace();
+                                         }
+                                         System.out.println(Thread.currentThread().getName() + "正在出售第 " + number-- + "张票");
+                                     } else
+                                 {
+                                     flag = false;
+                                 }
+                             }finally
+                             {
+                                 l.unlock();
+                             }
+                         }
+                     }
+                 }
+
+         2.ReentrantReadWriteLock应用而生，针对读多写少的场景，Lock接口提供了RRW，同一时间允许多个读线程同时访问，但是不允许读写，写写线程同时访问。RRW内部维护了两个锁，一个读锁ReadLock，一个WriteLock锁。
+
+
+
+
+     实现生产和消费的同步线程案例
+     wait方法和notfy方法必须在synchronized同步方法中使用
+     wait方法: 使将当前活动的线程进入等待状态，直到被唤醒
+     notfy方法：唤醒所等待的线程
+     run.java
+     public class run {
+         public static void main(String args[])
+         {
+             Box b = new Box();
+             Producers p = new Producers(b);
+             Consumers c = new Consumers(b);
+             Thread t1 = new Thread(p);
+             Thread t2 = new Thread(c);
+     ​
+             t1.start();
+             t2.start();
+         }
+     }
+     producers.java
+     ​
+     public class Producers implements Runnable{
+         private Box bs;
+     ​
+         public Producers(Box b)
+     {
+             this.bs = b;
+         }
+     ​
+         @Override
+         public void run()
+     {
+             for(int i=1;i<=5;i++)
+             {
+                 this.bs.put(i);
+             }
+         }
+     ​
+     }
+
+     consumers.java
+     ​
+     public class Consumers implements Runnable{
+         private Box bs;
+          ​
+         public Consumers(Box b)
+         {
+             this.bs = b;
+         }
+          ​
+         @Override
+         public void run()
+         {
+             while(true)
+             {
+                 this.bs.get();
+             }
+         }
+          ​
+     }
+
+
+     Box.java
+     ​
+     public class Box {
+         private int number;
+         private Boolean flag = false;
+     ​
+         public Box() {}
+     ​
+         public Box(int number) {
+             this.number = number;
+         }
+     ​
+         public synchronized void put(int numbers)
+         {
+             if(flag)
+             {
+                 try {
+                     wait();
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+             }
+             this.number = numbers;
+             System.out.println("送奶工放入第 " + this.number + " 袋奶");
+             flag = true;
+             notifyAll();
+         }
+     ​
+         public synchronized void get()
+         {
+             if(!flag)
+             {
+                 try {
+                     wait();
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+             }
+     ​
+             System.out.println("消费者拿走第 " + this.number + " 袋奶");
+             flag = false;
+             notifyAll();
+         }
+     ​
+     }       ​
+
+
+网络编程:
+    InetAddress类
+        getByName()方法 用来确定主机名称，是个静态方法，直接类.方法名直接访问，参数可以是主机名，也可以是ip地址
+        getHostName()方法 用来获取主机名称，返回类型是String
+        getHostAddress()方法 用来获取主机ip，返回类型是String
+
+    UDP网络编程
+        发送数据：
+            1. 创建udp的发送端socket对象(DatagramSocket类)
+            2. 创建数据包，并打包数据(DatagramPacket类)，第一个参数是字节数组数据内容，第二个参数数据长度，第三个参数是InetAddress的发送端ip信息，第四个参数是端口信息
+            3. 发送数据
+            4. 关闭发送端
+
+            import java.io.IOException;
+            import java.net.DatagramPacket;
+            import java.net.DatagramSocket;
+            import java.net.InetAddress;
+            ​
+            public class Senddata
+            {
+                public static void send() throws IOException {
+                    DatagramSocket ds = new DatagramSocket();
+                    byte[] data = "我是数据包".getBytes();
+                    InetAddress ipaddr = InetAddress.getByName("127.0.0.1");
+                    int port = 8989;
+                    DatagramPacket dp = new DatagramPacket(data,data.length,ipaddr,port);
+                    ds.send(dp);
+                    ds.close();
+                }
+             }
+
+        接受数据:
+            1. 创建一个udp接收端socket对象(DatagramSocket类)参数是发送端设置的端口
+            2. 创建一个接受数据包(DatagramPacket类)第一个参数是发送端byte数据，第二个参数是数据包的长度
+            3. 接受数据
+            5. 关闭接收端
+
+            import java.io.IOException;
+            import java.net.DatagramPacket;
+            import java.net.DatagramSocket;
+            import java.net.SocketException;
+            ​
+            public class ReveData {
+            ​
+                public static void reve() throws IOException {
+                    DatagramSocket ds = new DatagramSocket(8989);
+                    byte[] data = new byte[1024];
+                    DatagramPacket dp = new DatagramPacket(data,data.length);
+                    ds.receive(dp);
+                    System.out.println("数据室: " + new String(dp.getData(),0,dp.getLength()));
+                    ds.close();
+                }
+            ​
+            }
+
+
+    Tcp连接通信
+        Socket对象有两个重要的方法:
+            GetInputStream方法可以得到一个输入流，客户端的Socket对象上的getInputStream方法得到的输入流其实就是从服务器端发回的数据流。
+            GetOutputStream方法得到一个输出流，客户端Socket对象上的getOutputStream方法返回的输出流就是将要发送到服务器端的数据流，(其实是一个缓冲区，暂时存储将要发送过去的数据)。
+
+
+        客户端发送数据
+            1.创建Socket对象建立TCP客户端
+            2.创建tcp的输出流,使用wirte方法进行写入内容
+            3.使用close方法关闭连接
+            ​
+            BufferedReader是讲字符流数据放到字符流缓存中
+            InputStreamReader是将字节流变成字符流
+            System.in是控制输入
+            ​
+            public class Client {
+                public static void main(String args[]) throws IOException {
+                    Socket s = new Socket("127.0.0.1",8989);
+                    OutputStream os = s.getOutputStream();
+                    while(true)
+                    {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                        String data = br.readLine();
+                        if("quit".equals(data))
+                        {
+                            break;
+                        }
+                        os.write(data.getBytes());
+                    }
+                    os.close();
+                }
+            }
+
+
+        服务器端接受数据
+            1. 创建一个ServerSocket对象建立服务端
+            2. 接受客户端信息
+            3. 关闭连接
+            ​
+            ​Serversocket的参数是客户端的端口
+            accpet方法接受客户端发送的信息
+            getRemotesSocketAddress方法得到客户端ipxinxi
+            getInputStream方法获取数据输入流
+            ​
+            ​
+            public class Server {
+                public static void main(String args[]) throws IOException {
+                    ServerSocket ss = new ServerSocket(8989);
+                    Socket s = ss.accept();
+                    System.out.println("连接到了: " + s.getRemoteSocketAddress());
+                    byte[] data = new byte[1024];
+                    while(true)
+                    {
+                        InputStream is = s.getInputStream();
+                        is.read(data);
+                        int len = data.length;
+                        String datas = new String(data,0,len);
+                        if("quit".equals(datas))
+                        {
+                            break;
+                        }
+                        System.out.println("数据是 : " + datas);
+            ​
+                    }
+                    s.close();
+                    ss.close();
+                }
+            }
+
+    案例:
+        一、控制台打印和接收
+        Client.java
+        使用io字符流发送数据
+        Socket s = new Socket("127.0.0.1",8989);
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+        String line;
+        while((line= br.readLine())!= null)
+        {
+            if("quit".equals(line))
+            {
+                break;
+            }
+            wr.write(line);
+            wr.newLine();
+            wr.flush();
+        }
+        s.close();
+
+
+        Server.java
+        使用io字符流接受数据
+        ServerSocket ss = new ServerSocket(8989);
+        Socket s = ss.accept();
+        System.out.println("连接到了 " + s.getRemoteSocketAddress());
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String line;
+        while((line = br.readLine()) != null)
+        {
+            System.out.println("数据是  " + line);
+        }
+        ss.close();
+
+
+
+
+        二、 客户端从文件中读取数据发送到服务端写入文件中
+        Client.java
+        Socket s = new Socket("127.0.0.1",8989);
+        BufferedReader br = new BufferedReader(new FileReader("E:\\ventoy\\1.0.78\\sha256.txt"));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+        String line;
+        while((line = br.readLine())!= null)
+        {
+            bw.write(line);
+            bw.newLine();
+            bw.flush();
+        }
+        s.shutdownOutput();
+        InputStream is =  s.getInputStream();
+        byte[] data = new byte[1024];
+        is.read(data);
+        System.out.println("服务器返回:  " + new String(data,0,data.length));
+        s.close();
+
+
+        Server.java
+        String file = "E:\\2.txt";
+        ServerSocket ss = new ServerSocket(8989);
+        Socket s = ss.accept();
+        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        String line;
+        while((line = br.readLine()) != null)
+        {
+            bw.write(line);
+            bw.newLine();
+            bw.flush();
+        }
+        bw.close();
+        OutputStream os = s.getOutputStream();
+        os.write(("我把文件存放到了 : " + file).getBytes());
+        ss.close();
+
+    注:
+        Socket的shutdownOutput方法是中止输出流
+        Socket.shutdownOutput()表示客户端已完成通过TCP连接的所有数据发送。它将发送剩余的数据，然后发送终止序列，该序列将完全关闭其OUTGOING连接。无法发送任何进一步的数据，这也将向您的程序表明请求已完全完成。因此，如果您确定不必再发送任何数据，则建议这样做。
+
+
+
+lambda表达式
+    lambada格式:  (形式参数)->{代码块}
+    ​
+        1.(形式参数) ,若没有留空即可，若有多个直接逗号分隔开即可
+        2. -> 是固定写法，表示动作
+        3. {} 代码块写的是将要执行的内容
+        注:
+          使用lamdba表达式的前提必须是一个接口，而且有且只有一个抽象方法。
+
+        例句:
+            new Thread( () -> {
+                System.out.println("13");
+            }
+            ).start();
+​
+
+    lambda表达式替换匿名内部类使用
+    ​
+    定义一个接口
+    //无返回无参数
+    public interface Ea {
+        public abstract void eat();
+    }
+    ​
+    //又参数有返回值
+    public interface Ea {
+        public abstract String eat(String name);
+    }
+    ​
+    ​
+    run.java
+    public class run {
+        public static void main(String args[])
+        {
+            //无返回无参数
+            //匿名内部类实现
+            show(new Ea(){
+               @Override
+                public void eat()
+               {
+                   System.out.println(465456465);
+               }
+                 }
+            )
+            //lambda表达式实现
+            show(()->System.out.println(13213123));
+
+            //有参数返回值
+            //匿名内部李实现
+            show(new Ea() {
+                @Override
+                public String eat(String name) {
+                    return name;
+                }
+            })
+            //lambda表达式实现
+            show(name -> name);
+
+        }
+
+        //无返回无参数
+        public static void show(Ea ma)
+        {
+            ma.eat();
+        }
+
+        //有参数返回值
+        public static void show(Ea a)
+        {
+            System.out.println(a.eat("小鱼干"));
+        }
+    }
+    ​
+    ​
+    ​
+     lambda省略 注:
+        1. 形式参数中的参数类型可以省略
+        2. 当只有一个参数的时候，可以省略小括号
+        3. 当有多个参数的时候，不能只省略一个参数类型
+        4. 当只有一条语句和一个参数的时候，可以省略小括号和大括号
+        5. 当只有一条语句和一个参数并且还有返回值的时候，可以省略小括号和大括号和return
+
+      lambda表达式要求 必须是一个接口，接口里必须只有一个抽象方法。
+      必须要有上下文前提下lambda表达式才能推断出使用的是哪个接口的哪个方法
+
+
+
+    lambda表达式和匿名内部类的区别:
+      1. 所需类型不同:
+         lambda表达式只能是接口
+         匿名内部类有接口，具体类，抽象类
+
+      2. 使用限制不同:
+         当接口中只有一个抽象方法时，可以使用匿名内部类，也可以使用lambda表达式
+         当接口中有多个抽象方法时，只能使用匿名内部类
+
+      3. 实现原理不同
+         使用匿名内部时会生成一个单独的class字节码文件
+         使用lambda表达式时不会生成单独的字节码文件，它会在运行过程中动态生成
+
+
+
+
+方法引用:
+    格式:
+        1.类名::静态方法
+        2.对象::非静态方法
+
+    例句:
+        //接口
+        public interface nter {
+            String show(String s);
+        }
+
+        //方法引用类
+        public class Mynter {
+            //非静态方法
+            public String shows(String s)
+            {
+                return s.toUpperCase();
+            }
+            //静态方法
+            public static String shows(String s)
+            {
+                return s.toUpperCase();
+            }
+        }
+
+        //运行
+        public class run {
+            public static void main(String args[])
+            {
+                //类::静态方法
+                upercase(Mynter::shows);
+
+                //对象::非静态方法
+                Mynter mn = new Mynter();
+                upercase(mn::shows);
+
+            }
+            public static void upercase(nter n)
+            {
+                System.out.println(n.show("mhp"));
+            }
+        }
+
+
+    引用构造器:
+        格式: 类名::new
+        当lambda表达式被构造器所替代的时候，它的形式参数全部都给了构造器的类名的构造方法里。
+        例句；
+            run.java
+            public class run {
+
+                public static void main(String args[])
+                {
+                    show((name,age)->
+                    {
+                        return new Student(name,age);
+                    });
+                    show(Student::new);
+                }
+
+                public static void show(Stuinteer st)
+                {
+                    Student s = st.gettext("孟海平",23);
+                    System.out.println("name:  " + s.getName() + ", age:  " + s.getAge());
+                }
+            }
+
+            Student.java
+            public class Student {
+                private String name;
+                private int age;
+
+                public Student()
+                {
+
+                }
+
+                public Student(String name, int age) {
+                    this.name = name;
+                    this.age = age;
+                }
+
+
+                public String getName() {
+                    return name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+            }
+
+            Stuinter.java
+            
+函数式接口
+  表现:
+  1. @FunctionalInterface
+  2. 接口里有且只有一个抽象方法
+
+    函数接口当做形参时:
+    当一个方法的参数是一个函数式接口时，可以使用lambda表达式进行作为参数传递
+    ​
+    run.java
+    ​
+    public class run {
+    ​
+        public static void main(String args[])
+        {
+            demo(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName() + "线程开始了");
+                }
+            });
+    ​
+            demo(()->System.out.println(Thread.currentThread().getName() + "线程开始了"));
+    ​
+        }
+        public static void demo(Runnable r)
+        {
+            new Thread(r).start();
+        }
+    }
+    ​
+    ​
+    ​
+    函数式接口当做返回值时：
+    当一个方法的返回值是一个函数式接口时，可以使用lambda表达式进行作为返回值
+    run.java
+    ​
+    public class run {
+    ​
+        public static void main(String args[])
+        {
+            ArrayList<String> as = new ArrayList<>();
+            as.add("mhsdasdfasdfap");
+            as.add("zlfadsl");
+            as.add("zmlsdfgds");
+            as.add("fsdfsd");
+            System.out.println(as);
+            Collections.sort(as,demo());
+            System.out.println(as);
+    ​
+        }
+        public static Comparator<String> demo()
+        {
+            //匿名内部类实现
+            return new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.length() - s2.length();
+                }
+            };
+            //lambda表达式实现
+            return (s1,s2) -> s1.length() - s2.length();
+        }
+    }
+
+    常用的函数式接口:
+        1. supplier接口 : 包含一个无参的方法
+            1. T get(): 获取接口
+            2. 该方法不需要参数，它会按照某种实现逻辑(由lambda表达式实现)返回一个数据
+            3. Supplier<T>接口也被称为生产接口，如果我们指定了接口泛类是什么类型，那么接口中的get方法就会生成什么类型的数据提供使用
+
+            例句:
+                public class run {
+                    public static void main(String args[])
+                    {
+                        List<Integer> hs = new ArrayList<>();
+                        Random r = new Random();
+                        for(int i=0;i<10;i++)
+                        {
+                            int value = r.nextInt(100);
+                            hs.add(value);
+                        }
+                        System.out.println(hs);
+                        int maxvalue = getmaxvalue(()->{
+                            int max = hs.get(0);
+                            for(int i=1;i<hs.size();i++)
+                            {
+                                if(max < hs.get(i)) max = hs.get(i);
+                            }
+                            return max;
+                        });
+                        System.out.println("最大值是: " + maxvalue);
+                    }
+
+                    public static int getmaxvalue(Supplier<Integer> sp)
+                    {
+                        return sp.get();
+                    }
+                }
+
+        2. Consumer<T>接口
+            1. void accept(T t) 对给定的参数执行此操作
+            2. default Consumer<T> andThen(Consumer after) :返回一个组合Consumer，从左到右依次执行操作，然后执行after操作
+            3. Consumer<T> 接口称为消费接口，它消费的数据类型由泛型指定。
+
+            例句:
+                public class run {
+                    public static void main(String args[])
+                    {
+                        getdata("张美玲",(name)->System.out.println(name));
+                        getdata("张美玲",System.out::println);
+                        putdata("孟海平",System.out::println,(name)->System.out.println(new StringBuilder(name).reverse().toString()));
+                    }
+
+                    public static void getdata(String name, Consumer<String> con1)
+                    {
+                        con1.accept(name);
+                    }
+
+                    public static void putdata(String name,Consumer<String> con1,Consumer<String> con2)
+                    {
+                        con1.andThen(con2).accept(name);
+                    }
+                }
+
+        3.Predicate接口 : 对某种数据类型进行判断，从而得到一个boolean值的结果。
+            boolean test(T t), 对给定参数进行判断(判断逻辑由lambda表达式实现)，返回一个布尔值
+            default Predicate<T> negate(): 返回一个逻辑的否定，对应逻辑非
+            Predicate<T>接口通常用于判断参数是否满足指定得到条件
+            default Predicate<T> and (Predicate other): 返回一个组合判断，对应短路与
+            default Predicate<T> or (Predicate other): 返回一个组合判断，对应短路或
+
+            例句:
+                public class run {
+                    public static void main(String args[])
+                    {
+                        String str = "abcdefghijklmnpqrstuvwxyz";
+                        Random r = new Random();
+                        StringBuilder sb = new StringBuilder();
+                        int size = r.nextInt(15);
+                        for(int i=0;i<size;i++)
+                        {
+                            int id = r.nextInt(25);
+                            sb.append(str.charAt(id));
+                        }
+                        System.out.println(sb.toString());
+                        System.out.println(ifdata(sb.toString(),(data)->data.length()>8));
+
+                        System.out.println(anddata(sb.toString(),(str1)->str1.length()<10,(str2)->str2.length()>5));
+                        System.out.println(ordata(sb.toString(),(str1)->str1.length()<10,(str2)->str2.length()>5));
+                    }
+
+                    public static boolean ifdata(String value, Predicate<String> pre)
+                    {
+                        return pre.test(value);
+                    }
+
+                    public static boolean anddata(String value,Predicate<String> pre1,Predicate<String> pre2)
+                    {
+                        return pre1.and(pre2).test(value);
+                    }
+
+                    public static boolean ordata(String value,Predicate<String> pre1,Predicate<String> pre2)
+                    {
+                        return pre1.or(pre2).test(value);
+                    }
+                }
+            //Predicate函数式接口实现条件匹配查询
+              ​
+              public class run {
+                  public static void main(String args[])
+                  {
+                      String data[] = {"zml,22","zll,5","mhp,57","zljd,59","asdfas,5"};
+                      List<String> lt = getdata(data,(name)->(name.split(",")[0]).length()>2,(age)->Integer.parseInt(age.split(",")[1])<33);
+                      for(String rs : lt)
+                      {
+                          System.out.println("name:  " + rs.split(",")[0] + "  age:  " + rs.split(",")[1]);
+                      }
+                  }
+                  public static List<String> getdata(String data[], Predicate<String> pre1, Predicate<String> pre2)
+                  {
+                      List<String> lt = new ArrayList<>();
+                      for(String rs : data)
+                      {
+                          if(pre1.and(pre2).test(rs))
+                          {
+                              lt.add(rs);
+                          }
+                      }
+                      return lt;
+                  }
+              }
+
+        4. Function<T R>接口 : T是输入参数类型，R返回结果类型
+             1. apply(T t)：将次函数应用于给定的参数
+             2. default<V> Funcation andThen(Funcation after): 返回一个组合函数，首先改函数应用于输入，然后将after函数应用于结果
+
+             例句:
+                 public class run {
+               public static void main(String args[])
+               {
+                   String name = "张美玲,23";
+                   getdata(name,(data)->Integer.parseInt(data.split(",")[1]),(age)->String.valueOf(age + 70));
+               }
+           ​
+               public static void getdata(String name, Function<String,Integer> ft1,Function<Integer,String> ft2)
+               {
+                   //这里是运行ft1的apply方法，运行完成后，将其返回结果作为ft2的参数进行输入
+                   System.out.println(ft1.andThen(ft2).apply(name));
+               }
+           }
+           ​
+
+Stream流操作
+    1.生成流
+        通过数据源(集合，数组等)生成流
+        list.stream()
+    2.中间操作
+        一个流后面可以跟踪零个或者多个中间操作，其目的主要是打开流，做出某种程度的数据过滤，然后返回一个新的流交给下一个操作使用
+        filter()
+        skip()和limit()
+        contat()和distinct()
+        sorted()
+        map()和mapToInt()和sum()
+
+    3.终结操作
+        一个流只能有一个终结操作，当这个操作执行完毕后，流就被用光了，无法再次使用，所以必定是流的最后一个操作
+        forEach()
+        count()
+
+    例句:
+        public class run {
+            public static void main(String args[])
+            {
+                ArrayList<String> al = new ArrayList<>();
+                al.add("65asdfa6997");
+                al.add("asda6");
+                al.add("65as");
+                al.add("asdfa");
+                al.stream().filter((name)->name.startsWith("6")).filter((name)->name.length()>5).forEach(System.out::println);
+
+                //列表实现
+                List<String> li = new ArrayList<>();
+                Stream<String> liststream = li.stream();
+
+                //集合实现
+                Set<String> st = new HashSet<>();
+                Stream<String> setstream = st.stream();
+
+                //map实现
+                Map<String,Integer> map = new HashMap();
+                Stream<String> keyystream = map.keySet().stream();
+                Stream<Integer> valuestream = map.values().stream();
+                Stream<Map.Entry<String,Integer>> enystream = map.entrySet().stream();
+
+                //数组实现
+                String name[] = {"mhp","zll","zml"};
+                Stream<String> datastream = Stream.of(name);
+                Stream<String> datastreams = Stream.of("zll","zml","mhp");
+             }
+        }
+
+    skip和limit的使用:
+        skip: 指定跳过前几个数据
+        limit: 指定打印前几个数据
+
+
+        ArrayList<String> al = new ArrayList<>();
+        al.add("65asdfa6997");
+        al.add("asda6");
+        al.add("65as");
+        al.add("asdfa");
+        al.stream().skip(2).limit(3).forEach(System.out::println);
+
+    contat和distinct的使用
+        contat是个静态方法，实现多个stream流的合并
+        distinct实现去掉contat合并后重复的内容
+
+        Integer name1[] = {1,8,9,3,65,56};
+        Integer name2[] = {55,96,63,65};
+        Stream<Integer> stream1 = Stream.of(name1);
+        Stream<Integer> stream2 = Stream.of(name2);
+        Stream.concat(stream1,stream2).distinct().forEach(System.out::println);
+
+    sorted的使用
+        sorted方法进行(数组，列表，集合些等)的排序
+        当sorted()不使用lambda表达式重写默认是自然排序
+        当sorted使用lambda表达式重写后按照重写方法的具体要求进行排序
+
+        //实现按照名字长度排序，当名字相同的时候按照自然排序(字母顺序)
+        List<String> li = new ArrayList<>();
+        li.add("zml");
+        li.add("zll");
+        li.add("mhp");
+        li.add("nb");
+        li.add("abd");
+        li.stream().sorted( (s1,s2) -> {
+            int num = s1.length() - s2.length();
+            int num2 = num==0?s1.compareTo(s2):num;
+            return num2;
+        }).forEach(System.out::println);
+
+    map和mapToInt和sum的使用
+        map方法按照lambda表达式或方法引用的具体内容对其列表元素进行指定的转化
+        mapToInt方法返回Integer类型
+        sum方法统计stream流中mapToInt方法转化后的总和值
+
+        List<String> li = new ArrayList<>();
+        li.add("10");
+        li.add("20");
+        li.add("30");
+        li.add("40");
+        li.add("50");
+
+        li.stream().map((name)->Integer.parseInt(name)).forEach(System.out::println);
+
+        li.stream().mapToInt(Integer::parseInt).forEach(System.out::println);
+        int sum = li.stream().mapToInt(Integer::parseInt).sum();
+        System.out.println(sum);
+
+
+    count()的使用
+        count方法返回(列表,数组，集合些)元素的个数
+        List<String> li = new ArrayList<>();
+        li.add("10");
+        li.add("20");
+        li.add("30");
+        li.add("40");
+        li.add("50");
+
+        System.out.println(li.stream().count());
+
+     collect方法使用
+        注:
+            Stream 流的注意事项：Stream不调用终止方法，中间的操作不会执行。
+            但是，当我们对 Stream 流中的数据操作完成之后，如果需要将流的结果进行保存，方便我们接下来对结果的继续操作，该怎么办呢？
+            Stream 流提供了一个 collect() 方法，可以收集流中的数据到【集合】或者【数组】中去。
+
+        collect方法将收集流中的数据存放到列表或者集合中去
+        Collectors.toList()    将数据流放到列表中去
+        Collectors.toSet()    将数据流放到集合中去
+
+        List<String> li = new ArrayList<>();
+        li.add("10");
+        li.add("20");
+        li.add("30");
+        li.add("40");
+        li.add("50");
+
+        List<Integer> ll = new ArrayList<>();
+        ll.add(10);
+        ll.add(20);
+        ll.add(30);
+        ll.add(40);
+        ll.add(50);
+
+        Stream<Integer> so = ll.stream().filter((data)->data>20);
+        List<Integer> lst = so.collect(Collectors.toList());
+        for(Integer s : lst)
+        {
+            System.out.println(s);
+        }
+
+        Stream<String> st = li.stream().filter(data -> Integer.parseInt(data) > 20);
+        List<String> ls = st.collect(Collectors.toList());
+        for(String x : ls)
+        {
+            System.out.println(x);
+        }
+
+
+
+反射:
+    三种方式获取Class对象
+        1. 使用类的Class属性获取对应的Class对象，举例: Teacher.class将返回Teacher类对应的Class对象
+        2. 调用对象的getClass()方法，返回所属对象对应的Class对象
+            该方法是Object类的方法，所有的java对象都可以调用该方法
+        3. 使用class类中的静态方法forName(String className),该方法需要传入字符串参数，该字符串参数值是某个类的全路劲。
+
+    获取构造方法:
+
+
+        例句:
+            getConstructors()方法获取public公共的构造方法，返回一个Constuctor类型的数组
+            getDeclaredConstructors()方法获取所有类型的构造方法，返回一个Constuctor类型的数组
+            getConstructor()方法返回一个公共构造方法对象
+            getDeclaredConstrucotr()方法返回单个构造方法对象
+
+            Constructor<?>[] cs = c3.getConstructors();
+            for(Constructor x : cs)
+            {
+                System.out.println(x);
+            }
+
+            System.out.println("--------------------");
+
+            Constructor<?>[] ds = c3.getDeclaredConstructors();
+            for(Constructor x : ds)
+            {
+                System.out.println(x);
+            }
+
+            System.out.println("--------------------");
+
+            Constructor<?> ct = c3.getConstructor();
+            Object o = ct.newInstance();
+            System.out.println(o);
+
+            System.out.println("--------------------");
+
+            Constructor<?> dc = c3.getDeclaredConstructor();
+            Object o1 = dc.newInstance();
+            System.out.println(o1);
 
 
 
 
 
+        反射成员变量:
+
+            Filed[] getFields()  返回所有公共成员变量对象的数组
+            Field[] getDeclaredFields() : 返回所有成员变量对象的数组
+            Field getField(String name) : 返回单个成员变量的对象
+            Field getDeclaredField(String name): 返回单个成员变量对象
+            当类重写toString()方法时，打印该类的对象时候就会按照toSting()的格式进行输出
+            暴力反射(setAccessible()方法取消方法检查，可以访问到任何修饰符修饰的属性)
+            使用Field的set()可以给反射出来的对象修改属性值
+            public class run {
+            ​
+                public static void main(String args[]) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchFieldException {
+                    Teacher ts = new Teacher("张磊磊",24);
+                    System.out.println(ts);
+                    System.out.println("--------------------------------");
+            ​
+                    Class<?> cs = Class.forName("Demo.Teacher");
+                    Constructor<?> ds = cs.getDeclaredConstructor();
+                    Object obj = ds.newInstance();
+                    System.out.println(obj);
+                    System.out.println("--------------------------------");
+            ​
+                    Field nameField = cs.getDeclaredField("name");
+                    nameField.setAccessible(true);
+                    nameField.set(obj,"孟海平");
+                    System.out.println(obj);
+                    System.out.println("--------------------------------");
+            ​
+                    Field ageField = cs.getDeclaredField("age");
+                    ageField.setAccessible(true);
+                    ageField.set(obj,23);
+                    System.out.println(obj);
+                }
+            }
+
+        反射成员方法:
+            Method[] getMethods() : 返回所有公共成员方法对象的数组，包括继承的
+            Method[] getDeclaredMethods() : 返回所有成员方法对象的数组，不包括继承的
+            Method getMethod(String name,Class<?>...parameter) : 返回单个公共成员方法对象
+            Method getDeclaredMethod(String name,Class<?>...parameterTypes) : 返回单个成员方法对象
+            Method类中用于调用成员方法的方法
+              object invoke(Object obj,Object....args): 调用obj对象的成员方法，参数是args，返回值是Object类型
+            ​
+            public class run
+            {
+                public static void main(String args[]) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+                    Class<?> cs = Class.forName("Demo.Teacher");
+                    //调用构造方法创建对象
+                    Constructor<?> ds = cs.getDeclaredConstructor(String.class,int.class);
+                    //实例化对象
+                    Object obj = ds.newInstance("孟海平",23);
+                    System.out.println("-----------------------------");
+                    Method[] methods = cs.getMethods();
+                    for(Method x : methods)
+                    {
+                        System.out.println(x);
+                    }
+                    System.out.println("-----------------------------");
+                    Method[] methods2 = cs.getDeclaredMethods();
+                    for(Method x : methods2)
+                    {
+                        System.out.println(x);
+                    }
+                    System.out.println("-----------------------------");
+                    //调用无参无返回值方法
+                    Method showmothod = cs.getMethod("show");
+                    showmothod.invoke(obj);
+                    System.out.println("-----------------------------");
+                    //调用有参无返回值方法
+                    Method show1method = cs.getDeclaredMethod("show1",String.class);
+                    show1method.setAccessible(true);
+                    show1method.invoke(obj,"我是有参无返回值方法");
+                    System.out.println("-----------------------------");
+                    ////调用有参有返回值方法
+                    Method show2method = cs.getDeclaredMethod("show2", String.class);
+                    show2method.setAccessible(true);
+                    Object rd = show2method.invoke(obj, "我是有参有返回值方法");
+                    System.out.println(rd);
+                }
+            }
 
 
 
+        反射越过成员检查：
+            public class run
+            {
+                public static void main(String args[]) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+                    ArrayList<Integer> cs = new ArrayList<>();
+            ​
+                    Class<? extends ArrayList> ac = cs.getClass();
+                    Method ad = ac.getMethod("add", Object.class);
+            ​
+                    ad.invoke(cs,"zljdklfja");
+                    ad.invoke(cs,"bfagaafja");
+                    ad.invoke(cs,"asdfaga");
+            ​
+                    System.out.println(cs);
+            ​
+                }
+            }
+
+            反射实现运行配置文件指定内容
+                Properties pro = new Properties();
+                FileReader fr = new FileReader("C:\\Users\\Administrator\\Desktop\\mhp\\src\\Data.txt");
+                pro.load(fr);
+                fr.close();
+        ​
+                String name = pro.getProperty("ClassName");
+                String method = pro.getProperty("MethodName");
+        ​
+                Class<?> cs = Class.forName(name);
+                Constructor<?> ds = cs.getConstructor();
+                Object obj = ds.newInstance();
+        ​
+                Method method1 = cs.getMethod(method);
+                method1.invoke(obj);
 
 
+模块化:
+    基本使用
+        想要实现A模块访问另外B模块中包中的类时:
+           1. 在B模块中的src下创建一个module-info.java文件，里面填写
+              module B模块名{
+                exprots 包名;
+              }
+           2. 在A模块中的src创建一个module-info.java文件，里面填写
+              module A模块名{
+                requires B模块名;
+              }
+        ​
+        java 9中的模块化服务机制，允许将服务接口定义在一个模块中，并使用uses语句来声明该服务接口，
+        然后针对该服务接口提供不同的服务实现类，这些服务实现类可以分布在不同的模块中，服务实现模块则使用provides语句为服务接口指定实现类。
+        例句:
+          mhp模块下的module-info.java文件
+          module mhp {
+            exports Demo;
+        ​
+            provides Inter with Myinter;
+          }
+
+          zll模块下的module-info.java文件
+          module zll {
+            requires mhp;
+        ​
+            uses Inter;
+          }
+
+          run.java文件
+            //ServiceLoader是一种加载服务实现工具类
+            ServiceLoader<Inter> sd = ServiceLoader.load(Inter.class);
+            System.out.println(sd);
+            for(Inter i : sd)
+            {
+                i.show();
+            }
+
+
+注解:
+    内置注解:
+      @SuppressWarnings  //镇压抑制警告信息，直接选择参数 all，警告就全部会被抑制
+      @Override    //重写的注解，判断该方法是否重写了父类的方法
+      @Deprecated    //不推荐使用的方法，使用的时候idea会出现横线提示
+
+    @SuppressWarnings("all")
+    public class Data extends Object {
+        private String username = "admin";
+        private String password = "123456";
+    ​
+        @Override
+        public String toString()
+    {
+            return super.toString();
+        }
+
+        @Deprecated
+        public static void eat()
+    {
+            System.out.println("我是不推荐使用的方法");
+        }
+
+
+        public void show()
+    {
+            System.out.println("账号:  " + username + " 密码: " + password);
+        }
+    }
+    ​
+    元注解
+      @Target({ElementType.TYPE,ElementType.METHOD})  //说明可以运行在指定的形式上
+        ElementType.TYPE 可以应用于类的任何元素。
+        ElementType.METHOD 应用在方法上
+      @Retention(RetentionPolicy.RUNTIME)   //说明在什么时候运行
+        RetentionPolicy.RUNTIME 说明在运行时环境时进行
+
+    ​
+    自定义注解
+      @Interface 注解名{
+          参数类型 参数名() default "设置默认值";
+      }
+    ​
+      @Target({ElementType.TYPE,ElementType.METHOD})
+      @Retention(RetentionPolicy.RUNTIME)
+      @interface myinter{
+          String name() default  "";
+      }
